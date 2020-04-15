@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Webpage Title -->
+        <title>✏️ Habits</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- 구글폰트 -->
+        <link
+            href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- CSS -->
+        <style>
+            a {
+                color: #000;
+            }
+            .mainModal {
+                display: none;
+                position: relative;
+            }
+            .content {
+                width: 440px;
+                height: 200px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                z-index: 11;
+                background: #fff;
+            }
+            .content button {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                cursor: pointer;
+            }
+        </style>
+
+        <script>
+            $(document).ready(function () {
+                let modal = $("#mainModal");
+                let link = $(".modalLink");
+                let content = $(".content");
+                let marginLeft = content.outerWidth() / 2;
+                let marginTop = content.outerHeight() / 2;
+
+                link.click(function () {
+                    modal.fadeIn("slow");
+                    content.css({
+                        "margin-top": -marginTop,
+                        "margin-left": -marginLeft,
+                    });
+                    $(this).blur();
+                });
+
+                $(".content > button").click(function () {
+                    modal.fadeOut("slow");
+                    link.focus();
+                });
+
+                listing();
+            });
+
+            function listing() {
+                $.ajax({
+                    type: "GET",
+                    url: "/habits",
+                    data: {},
+                    success: function (response) {
+                        console.log("working!");
+                    },
+                });
+            }
+
+            function posting() {
+                let email = $("#email").val();
+                let habit1 = $("#habit1").val();
+                let habit2 = $("#habit2").val();
+                let habit3 = $("#habit3").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/habits",
+                    data: {
+                        email: email,
+                        habits: [habit1, habit2, habit3],
+                    },
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert("등록 성공!");
+                            window.location.reload();
+                        } else {
+                            alert("서버 오류!");
+                        }
+                    },
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="wrap">
+            <a href="#mainModal" class="modalLink">
+                습관을 등록하세요
+            </a>
+            <div id="mainModal" class="mainModal">
+                <div class="content">
+                    <form action="">
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="이메일을 입력해주세요"
+                        />
+                        <input type="text" id="habit1" placeholder="습관" />
+                        <input type="text" id="habit2" placeholder="습관" />
+                        <input type="text" id="habit3" placeholder="습관" />
+                    </form>
+                    <button type="button" onclick="posting()">등록</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
