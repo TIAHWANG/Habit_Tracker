@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-import requests
 from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
@@ -17,7 +16,7 @@ def home():
 @app.route('/habits', methods=['GET'])
 def listing():
     result = list(db.habits.find({}, {'_id': 0}))
-    return jsonify({'result': 'success', 'habits': result})
+    return render_template("habits.html", habits=result)
 
 @app.route('/habits', methods=['POST'])
 def saving():
@@ -25,6 +24,8 @@ def saving():
     habits_receive = request.form.getlist('habits[]')
 
     for h in habits_receive:
+        if str(h).strip() == "":
+            continue
         habit = {'email': email_receive, 'habit': h}
         db.habits.insert_one(habit)
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Webpage Title -->
+        <title>✏️ Habits</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- 구글폰트 -->
+        <link
+            href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/fullcalendar.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/daygrid.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/calendar.css') }}"
+        />
+
+        <!-- FullCalendar JS -->
+        <script src="{{ url_for('static', filename='js/fullcalendar.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/daygrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/interaction.js') }}"></script>
+
+        <style>
+            h1 {
+                text-align: center;
+            }
+            #external-events {
+                position: fixed;
+                z-index: 2;
+                top: 100px;
+                left: 20px;
+                width: 150px;
+                padding: 0 10px;
+                border: 1px solid #ccc;
+                background: #eee;
+            }
+            #external-events .fc-event {
+                margin: 10px 0;
+                cursor: pointer;
+            }
+            #calendar {
+                max-width: 900px;
+                margin: 20px auto;
+            }
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let Calendar = FullCalendar.Calendar;
+                let Draggable = FullCalendarInteraction.Draggable;
+
+                let containerEl = document.getElementById("external-events");
+                let calendarEl = document.getElementById("calendar");
+
+                // initialize the external events
+                new Draggable(containerEl, {
+                    itemSelector: ".fc-event",
+                    eventData: function (eventEl) {
+                        return {
+                            title: eventEl.innerText,
+                        };
+                    },
+                });
+
+                // initialize the calendar
+                var calendar = new Calendar(calendarEl, {
+                    plugins: ["interaction", "dayGrid", "timeGrid"],
+                    header: { left: "prev", center: "title", right: "next" },
+                    editable: true,
+                    droppable: true,
+                });
+
+                calendar.render();
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Calender</h1>
+        <div id="external-events">
+            <p>
+                <strong>😃 My Habits</strong>
+            </p>
+            {% for habit in habits %}
+            <div class="fc-event">{{ habit.habit }}</div>
+            {% endfor %}
+            <!-- <p>
+                <input type="checkbox" id="drop-remove" />
+                <label for="drop-remove">remove after drop</label>
+            </p> -->
+        </div>
+        <div id="calendar"></div>
+    </body>
+</html>
