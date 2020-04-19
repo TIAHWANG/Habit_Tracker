@@ -41,37 +41,13 @@
         />
         <link
             rel="stylesheet"
-            href="{{ url_for('static', filename='css/calendar.css') }}"
+            href="{{ url_for('static', filename='css/calendar.css') }}?1=1"
         />
 
         <!-- FullCalendar JS -->
         <script src="{{ url_for('static', filename='js/fullcalendar.js') }}"></script>
         <script src="{{ url_for('static', filename='js/daygrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/interaction.js') }}"></script>
-
-        <style>
-            h1 {
-                text-align: center;
-            }
-            #external-events {
-                position: fixed;
-                z-index: 2;
-                top: 100px;
-                left: 20px;
-                width: 150px;
-                padding: 0 10px;
-                border: 1px solid #ccc;
-                background: #eee;
-            }
-            #external-events .fc-event {
-                margin: 10px 0;
-                cursor: pointer;
-            }
-            #calendar {
-                max-width: 900px;
-                margin: 20px auto;
-            }
-        </style>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -92,7 +68,7 @@
                 });
 
                 // initialize the calendar
-                var calendar = new Calendar(calendarEl, {
+                let calendar = new Calendar(calendarEl, {
                     plugins: ["interaction", "dayGrid", "timeGrid"],
                     header: { left: "prev", center: "title", right: "next" },
                     editable: true,
@@ -105,6 +81,7 @@
     </head>
     <body>
         <h1>Calender</h1>
+        <h3>안녕하세요 {{ email }}님!</h3>
         <div id="external-events">
             <p>
                 <strong>😃 My Habits</strong>
@@ -112,10 +89,6 @@
             {% for habit in habits %}
             <div class="fc-event">{{ habit.habit }}</div>
             {% endfor %}
-            <!-- <p>
-                <input type="checkbox" id="drop-remove" />
-                <label for="drop-remove">remove after drop</label>
-            </p> -->
         </div>
         <div id="calendar"></div>
     </body>

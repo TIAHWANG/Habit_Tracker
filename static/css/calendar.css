@@ -1,7 +1,10 @@
+h1 {
+    text-align: center;
+}
 #external-events {
     position: fixed;
     z-index: 2;
-    top: 20px;
+    top: 100px;
     left: 20px;
     width: 150px;
     padding: 0 10px;
@@ -9,13 +12,8 @@
     background: #eee;
 }
 #external-events .fc-event {
-    padding: 10px;
+    margin: 10px 0;
     cursor: pointer;
-}
-#calendar-container {
-    position: relative;
-    z-index: 1;
-    margin-left: 200px;
 }
 #calendar {
     max-width: 900px;
