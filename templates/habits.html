@@ -73,14 +73,38 @@
                     header: { left: "prev", center: "title", right: "next" },
                     editable: true,
                     droppable: true,
+                    displayEventTime: false,
+                    eventReceive: function (event, delta) {
+                        console.log("습관추가되었쥐");
+                        saveEvent(event);
+                    },
                 });
 
                 calendar.render();
             });
+
+            function saveEvent(event) {
+                $.ajax({
+                    type: "POST",
+                    url: "/habits-date",
+                    data: {
+                        date: event.event.start,
+                        title: event.event.title,
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert("저장 성공!");
+                        } else {
+                            alert("서버 오류!");
+                        }
+                    },
+                });
+            }
         </script>
     </head>
     <body>
-        <h1>Calender</h1>
+        <h1>Calendar</h1>
         <h3>안녕하세요 {{ email }}님!</h3>
         <div id="external-events">
             <p>

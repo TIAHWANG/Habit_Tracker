@@ -69,7 +69,8 @@
                     success: function (response) {
                         if (response["result"] == "success") {
                             alert("등록 성공!");
-                            window.location.href = "/habits";
+                            window.location.href =
+                                "/habits?email=" + response["current_email"];
                         } else {
                             alert("서버 오류!");
                         }
