@@ -24,7 +24,8 @@ def listing():
         if habit['email'] == current_email:
             user_habit_list.append(habit)
     username = current_email.split("@")[0]
-    return render_template("habits.html", email=username, habits=user_habit_list)
+
+    return render_template("habits.html", username=username, email=current_email, habits=user_habit_list)
 
 @app.route('/habits', methods=['POST'])
 def saving():
@@ -51,9 +52,10 @@ def listingEvents():
 @app.route('/habits-date', methods=['POST'])
 def savingEvents():
     date_receive = request.form['date']
-    title_receive = request.form['title'];
+    title_receive = request.form['title']
+    email = request.form['email']
 
-    calendar = {'date': date_receive, 'title': title_receive}
+    calendar = {'date': date_receive, 'title': title_receive, 'email': email}
     db.calendars.insert_one(calendar)
 
     return jsonify({'result': 'success'})
