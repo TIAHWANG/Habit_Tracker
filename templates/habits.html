@@ -28,96 +28,47 @@
         <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/fullcalendar.css') }}" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/daygrid.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}?1=1" />
 
-        <!-- FullCalendar JS -->
-        <script src="{{ url_for('static', filename='js/fullcalendar.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/daygrid.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/interaction.js') }}"></script>
+        <!-- JS -->
+        <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/daygrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                let Calendar = FullCalendar.Calendar;
-                let Draggable = FullCalendarInteraction.Draggable;
-
-                let containerEl = document.getElementById("external-events");
-                let calendarEl = document.getElementById("calendar");
-
-                // initialize the external events
-                new Draggable(containerEl, {
-                    itemSelector: ".fc-event",
-                    eventData: function (eventEl) {
-                        return {
-                            title: eventEl.innerText,
-                        };
-                    },
-                });
-
-                // initialize the calendar
-                let calendar = new Calendar(calendarEl, {
-                    plugins: ["interaction", "dayGrid"],
-                    header: { left: "prev", center: "title", right: "next" },
-                    editable: true,
-                    droppable: true,
-                    displayEventTime: false,
-                    eventReceive: function (event, _) {
-                        saveEvent(event);
-                    },
-                    eventSources: [
-                        {
-                            events: function (_, successCallback, __) {
-                                const currentEmail = location.search.split("=")[1];
-                                $.ajax({
-                                    url: "/habits-date",
-                                    type: "GET",
-                                    dataType: "json",
-                                    data: {},
-                                    success: function (response) {
-                                        const eventsList = response["events_list"];
-                                        console.log(eventsList);
-                                        let event = [];
-                                        for (let i = 0; i < eventsList.length; i++) {
-                                            if (eventsList[i].email === currentEmail) {
-                                                event.push(eventsList[i]);
-                                            }
-                                        }
-                                        console.log(event);
-                                        successCallback(event);
-                                    },
-                                });
-                            },
-                        },
-                    ],
-                });
-
-                calendar.render();
-            });
-
-            function saveEvent(event) {
-                const email = location.search.split("=")[1];
-                $.ajax({
-                    type: "POST",
-                    url: `/habits-date`,
-                    data: {
-                        date: moment(event.event.start).format("YYYY-MM-DDThh:mm"),
-                        title: event.event.title,
-                        email: email,
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        if (response["result"] == "success") {
-                            alert("저장 성공!");
-                        } else {
-                            alert("서버 오류!");
-                        }
-                    },
-                });
+        <style>
+            #external-events div.fc-event {
+                margin: 10px 0;
+                cursor: pointer;
+                background-color: #4d638c;
+                border: none;
+                padding: 2px;
             }
-        </script>
+
+            #chart__container {
+                display: none;
+                position: relative;
+            }
+
+            .content {
+                width: 1000px;
+                height: 800px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 11;
+                background: #fff;
+            }
+        </style>
     </head>
     <body>
+        <a href="#statistics"><button onClick="openChart()" type="button">통계</button></a>
         <h1>Calendar</h1>
         <h3>안녕하세요 {{ username }}님!</h3>
         <div id="external-events">
@@ -129,5 +80,101 @@
             {% endfor %}
         </div>
         <div id="calendar"></div>
+        <div id="chart__container">
+            <div class="content">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <script>
+            function groupBy(list, keyGetter) {
+                const map = new Map();
+                list.forEach((item) => {
+                    const key = keyGetter(item);
+                    const collection = map.get(key);
+                    if (!collection) {
+                        map.set(key, [item]);
+                    } else {
+                        collection.push(item);
+                    }
+                });
+                return map;
+            }
+
+            function openChart() {
+                const currentEmail = location.search.split("=")[1];
+                $.ajax({
+                    url: "/habits-date",
+                    method: "GET",
+                    success: (result) => {
+                        const eventsList = result["events_list"];
+                        let event = [];
+                        for (let i = 0; i < eventsList.length; i++) {
+                            if (eventsList[i].email === currentEmail) {
+                                event.push(eventsList[i]);
+                            }
+                        }
+                        console.log(event);
+
+                        const grouped = groupBy(event, (e) => e.title);
+                        const labelsList = Array.from(grouped);
+                        console.log(labelsList);
+                        let habitName = [];
+                        for (let i = 0; i < labelsList.length; i++) {
+                            habitName.push(labelsList[i][0]);
+                        }
+
+                        const modal = $("#chart__container");
+                        const content = $(".content");
+
+                        if (modal.css("display") === "none") {
+                            modal.fadeIn("slow");
+                            let ctx = document.getElementById("myChart").getContext("2d");
+
+                            var myChart = new Chart(ctx, {
+                                type: "bar",
+                                data: {
+                                    labels: habitName,
+                                    datasets: [
+                                        {
+                                            label: "# of Votes",
+                                            data: [10, 12, 24],
+                                            backgroundColor: [
+                                                "rgba(255, 99, 132, 0.2)",
+                                                "rgba(54, 162, 235, 0.2)",
+                                                "rgba(255, 206, 86, 0.2)",
+                                                "rgba(75, 192, 192, 0.2)",
+                                                "rgba(153, 102, 255, 0.2)",
+                                                "rgba(255, 159, 64, 0.2)",
+                                            ],
+                                            borderColor: [
+                                                "rgba(255, 99, 132, 1)",
+                                                "rgba(54, 162, 235, 1)",
+                                                "rgba(255, 206, 86, 1)",
+                                                "rgba(75, 192, 192, 1)",
+                                                "rgba(153, 102, 255, 1)",
+                                                "rgba(255, 159, 64, 1)",
+                                            ],
+                                            borderWidth: 1,
+                                        },
+                                    ],
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [
+                                            {
+                                                ticks: {
+                                                    beginAtZero: true,
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            });
+                        }
+                    },
+                });
+            }
+        </script>
     </body>
 </html>

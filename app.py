@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
@@ -27,6 +28,7 @@ def listing():
 
     return render_template("habits.html", username=username, email=current_email, habits=user_habit_list)
 
+
 @app.route('/habits', methods=['POST'])
 def saving():
     email_receive = request.form['email']
@@ -43,11 +45,22 @@ def saving():
 
     return jsonify({'result': 'success', 'current_email': current_email})
 
+
 @app.route('/habits-date', methods=['GET'])
 def listingEvents():
-    events_list = list(db.calendars.find({}, {'_id': 0}))
+    events_list = list(db.calendars.aggregate([{
+        '$project': {
+            '_id': {
+                '$toString': "$_id"
+            },
+            'date': 1,
+            'title': 1,
+            'email': 1
+        }
+    }]))
 
     return jsonify({'result': 'success', 'events_list': events_list})
+
 
 @app.route('/habits-date', methods=['POST'])
 def savingEvents():
@@ -59,6 +72,16 @@ def savingEvents():
     db.calendars.insert_one(calendar)
 
     return jsonify({'result': 'success'})
+
+
+@app.route('/habits-delete', methods=['POST'])
+def deleteEvents():
+    target_event = request.form['targetId_give']
+
+    db.calendars.delete_one({'_id': ObjectId(target_event)})
+
+    return jsonify({'result': 'success'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
