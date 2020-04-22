@@ -24,6 +24,13 @@
             crossorigin="anonymous"
         ></script>
 
+        <!-- FullCalendar-Moment -->
+        <script
+            class="cssdesk"
+            src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js"
+            type="text/javascript"
+        ></script>
+
         <!-- 구글폰트 -->
         <link
             href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
@@ -69,15 +76,33 @@
 
                 // initialize the calendar
                 let calendar = new Calendar(calendarEl, {
-                    plugins: ["interaction", "dayGrid", "timeGrid"],
+                    plugins: ["interaction", "dayGrid"],
                     header: { left: "prev", center: "title", right: "next" },
                     editable: true,
                     droppable: true,
                     displayEventTime: false,
-                    eventReceive: function (event, delta) {
-                        console.log("습관추가되었쥐");
+                    eventReceive: function (event, _) {
+                        console.log(event);
                         saveEvent(event);
                     },
+                    eventSources: [
+                        {
+                            events: function (_, successCallback, __) {
+                                $.ajax({
+                                    url: "/habits-date",
+                                    type: "GET",
+                                    dataType: "json",
+                                    data: {},
+                                    success: function (response) {
+                                        const eventsList =
+                                            response["events_list"];
+                                        console.log(eventsList);
+                                        successCallback(eventsList);
+                                    },
+                                });
+                            },
+                        },
+                    ],
                 });
 
                 calendar.render();
@@ -88,7 +113,9 @@
                     type: "POST",
                     url: "/habits-date",
                     data: {
-                        date: event.event.start,
+                        date: moment(event.event.start).format(
+                            "YYYY-MM-DDThh:mm"
+                        ),
                         title: event.event.title,
                     },
                     dataType: "json",

@@ -18,12 +18,12 @@ def home():
 def listing():
     current_email = request.args.get('email')
     habit_list = list(db.habits.find({}, {'_id': 0}))
-    # print(habit_list)
+
     user_habit_list = []
     for habit in habit_list:
         if habit['email'] == current_email:
             user_habit_list.append(habit)
-    username=current_email.split("@")[0]
+    username = current_email.split("@")[0]
     return render_template("habits.html", email=username, habits=user_habit_list)
 
 @app.route('/habits', methods=['POST'])
@@ -41,6 +41,12 @@ def saving():
         db.habits.insert_one(habit)
 
     return jsonify({'result': 'success', 'current_email': current_email})
+
+@app.route('/habits-date', methods=['GET'])
+def listingEvents():
+    events_list = list(db.calendars.find({}, {'_id': 0}))
+
+    return jsonify({'result': 'success', 'events_list': events_list})
 
 @app.route('/habits-date', methods=['POST'])
 def savingEvents():
