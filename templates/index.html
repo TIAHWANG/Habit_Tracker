@@ -6,10 +6,7 @@
 
         <!-- Required meta tags -->
         <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -25,17 +22,16 @@
         ></script>
 
         <!-- 구글폰트 -->
-        <link
-            href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
-            rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
         <!-- CSS -->
-        <link
-            rel="stylesheet"
-            href="{{ url_for('static', filename='css/main.css') }}?1=1"
-        />
-
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?1=1" />
+        <style>
+            small {
+                display: block;
+                font-size: 10px;
+            }
+        </style>
         <script>
             function openModal() {
                 let modal = $("#mainModal");
@@ -57,20 +53,18 @@
                 let email = $("#email").val();
                 let habit1 = $("#habit1").val();
                 let habit2 = $("#habit2").val();
-                let habit3 = $("#habit3").val();
 
                 $.ajax({
                     type: "POST",
                     url: "/habits",
                     data: {
                         email: email,
-                        habits: [habit1, habit2, habit3],
+                        habits: [habit1, habit2],
                     },
                     success: function (response) {
                         if (response["result"] == "success") {
                             alert("등록 성공!");
-                            window.location.href =
-                                "/habits?email=" + response["current_email"];
+                            window.location.href = "/habits?email=" + response["current_email"];
                         } else {
                             alert("서버 오류!");
                         }
@@ -91,20 +85,11 @@
             <div id="mainModal" class="mainModal">
                 <div class="content">
                     <form action="/habits" method="get">
-                        <input
-                            type="email"
-                            id="email"
-                            placeholder="이메일을 입력해주세요"
-                            required
-                        />
-                        <input
-                            type="text"
-                            id="habit1"
-                            placeholder="습관"
-                            required
-                        />
+                        <small>처음이시면, 이메일과 습관을 1개 입력해주세요</small>
+                        <small>방문한적이 있다면, 이메일만 입력해주세요</small>
+                        <input type="email" id="email" placeholder="이메일을 입력해주세요" required />
+                        <input type="text" id="habit1" placeholder="습관" required />
                         <input type="text" id="habit2" placeholder="습관" />
-                        <input type="text" id="habit3" placeholder="습관" />
                     </form>
                     <button type="button" onclick="posting()">등록</button>
                 </div>

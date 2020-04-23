@@ -28,7 +28,7 @@
         <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}?1=1" />
 
@@ -48,7 +48,8 @@
                 padding: 2px;
             }
 
-            #chart__container {
+            #chart__container,
+            #graph {
                 display: none;
                 position: relative;
             }
@@ -68,9 +69,11 @@
         </style>
     </head>
     <body>
-        <a href="#statistics"><button onClick="openChart()" type="button">통계</button></a>
+        <a href="#statistics"><button onClick="openChartModal()" type="button">통계</button></a>
         <h1>Calendar</h1>
         <h3>안녕하세요 {{ username }}님!</h3>
+
+        <!-- 습관목록 -->
         <div id="external-events">
             <p>
                 <strong>😃 My Habits</strong>
@@ -79,14 +82,44 @@
             <div class="fc-event">{{ habit.habit }}</div>
             {% endfor %}
         </div>
+
+        <!-- 달력 -->
         <div id="calendar"></div>
+
+        <!-- 통계차트 -->
         <div id="chart__container">
             <div class="content">
-                <canvas id="myChart"></canvas>
+                <div class="content__month">
+                    <select name="selectMonth" id="selectMonth">
+                        <option value="01">JAN</option>
+                        <option value="02">FEB</option>
+                        <option value="03">MAR</option>
+                        <option value="04">APR</option>
+                        <option value="05">MAY</option>
+                        <option value="06">JUN</option>
+                        <option value="07">JUL</option>
+                        <option value="08">AUG</option>
+                        <option value="09">SEP</option>
+                        <option value="10">OCT</option>
+                        <option value="11">NOV</option>
+                        <option value="12">DEC</option>
+                    </select>
+                    <button id="btn" onClick="openChart()">보기</button>
+                </div>
+                <div id="graph">
+                    <div>
+                        <h2>한달에 이만큼 했네요 😄</h2>
+                        <canvas id="myChart" height="350" width="600"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
         <script>
+            function openChartModal() {
+                $("#chart__container").show();
+            }
+
             function groupBy(list, keyGetter) {
                 const map = new Map();
                 list.forEach((item) => {
@@ -103,10 +136,14 @@
 
             function openChart() {
                 const currentEmail = location.search.split("=")[1];
+                const changeMonth = $("#selectMonth option:selected").val();
+                // console.log(changeMonth);
+
                 $.ajax({
                     url: "/habits-date",
                     method: "GET",
                     success: (result) => {
+                        // 현재 접속된 이메일의 습관목록 가져오기
                         const eventsList = result["events_list"];
                         let event = [];
                         for (let i = 0; i < eventsList.length; i++) {
@@ -114,31 +151,50 @@
                                 event.push(eventsList[i]);
                             }
                         }
-                        console.log(event);
+                        // console.log(event);
 
-                        const grouped = groupBy(event, (e) => e.title);
-                        const labelsList = Array.from(grouped);
-                        console.log(labelsList);
+                        // 월별로 새로운 array 형성
+                        const groupedByMonth = groupBy(event, (e) => e.date.split("-")[1]);
+                        const month = Array.from(groupedByMonth);
+                        // console.log(month);
+
+                        // 내가 선택한 month의 습관정보만 가져오는 array 형성
+                        let currentMonth = [];
+                        for (let i = 0; i < month.length; i++) {
+                            if (month[i][0] === changeMonth) {
+                                currentMonth.push(month[i][1]);
+                            }
+                        }
+                        // console.log(currentMonth[0]);
+
+                        // currentMonth를 다시 습관이름별로 array 형성
+                        const groupedByTitle = groupBy(currentMonth[0], (e) => e.title);
+                        const labelList = Array.from(groupedByTitle);
+                        // console.log(labelList);
+
+                        // 월별로 습관별 횟수 array
+                        let countByHabits = [];
+                        for (let i = 0; i < labelList.length; i++) {
+                            countByHabits.push(labelList[i][1].length);
+                        }
+                        // console.log(countByHabits);
+
                         let habitName = [];
-                        for (let i = 0; i < labelsList.length; i++) {
-                            habitName.push(labelsList[i][0]);
+                        for (let i = 0; i < labelList.length; i++) {
+                            habitName.push(labelList[i][0]);
                         }
 
-                        const modal = $("#chart__container");
-                        const content = $(".content");
-
-                        if (modal.css("display") === "none") {
-                            modal.fadeIn("slow");
+                        if ($("#graph").css("display") === "none") {
+                            $("#graph").show();
                             let ctx = document.getElementById("myChart").getContext("2d");
 
                             var myChart = new Chart(ctx, {
-                                type: "bar",
+                                type: "doughnut",
                                 data: {
                                     labels: habitName,
                                     datasets: [
                                         {
-                                            label: "# of Votes",
-                                            data: [10, 12, 24],
+                                            data: countByHabits,
                                             backgroundColor: [
                                                 "rgba(255, 99, 132, 0.2)",
                                                 "rgba(54, 162, 235, 0.2)",
@@ -158,17 +214,6 @@
                                             borderWidth: 1,
                                         },
                                     ],
-                                },
-                                options: {
-                                    scales: {
-                                        yAxes: [
-                                            {
-                                                ticks: {
-                                                    beginAtZero: true,
-                                                },
-                                            },
-                                        ],
-                                    },
                                 },
                             });
                         }

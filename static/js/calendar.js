@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function saveEvent(event) {
     const email = location.search.split("=")[1];
+
     $.ajax({
         type: "POST",
         url: "/habits-date",
