@@ -117,17 +117,19 @@
 
         <script>
             $("#external-events div").click((e) => {
+                const currentEmail = location.search.split("=")[1];
                 let targetName = e.target.innerHTML;
                 const editMsg = prompt(`선택된 습관: ${targetName}🥰 변경하고 싶은 이름을 적어주세요`);
                 if (editMsg) {
                     let newName = editMsg;
-                    // console.log(newName);
+                    console.log(newName);
                     e.target.innerHTML = newName;
 
                     $.ajax({
                         type: "POST",
                         url: "/habits-edit",
                         data: {
+                            email: currentEmail,
                             title: targetName,
                             newTitle: newName,
                         },

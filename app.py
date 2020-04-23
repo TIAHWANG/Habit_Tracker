@@ -49,11 +49,12 @@ def saving():
 
 @app.route('/habits-edit', methods=['POST'])
 def editName():
+    email_receive = request.form['email']
     name_receive = request.form['title']
     edited_name_receive = request.form['newTitle']
 
-    db.habits.update({'habit': name_receive}, {'$set': {'habit': edited_name_receive}})
-    db.calendars.update({'title': name_receive}, {'$set': {'title': edited_name_receive}}, upsert=True, multi=True)
+    db.habits.update_one({'email': email_receive, 'habit': name_receive}, {'$set': {'habit': edited_name_receive}})
+    db.calendars.update_many({'title': name_receive, 'email': email_receive}, {'$set': {'title': edited_name_receive}})
 
     return jsonify({'result': 'success'})
 
