@@ -15,6 +15,7 @@ db = client.dbhabits
 def home():
     return render_template('index.html')
 
+
 @app.route('/habits', methods=['GET'])
 def listing():
     current_email = request.args.get('email')
@@ -44,6 +45,17 @@ def saving():
         db.habits.insert_one(habit)
 
     return jsonify({'result': 'success', 'current_email': current_email})
+
+
+@app.route('/habits-edit', methods=['POST'])
+def editName():
+    name_receive = request.form['title']
+    edited_name_receive = request.form['newTitle']
+
+    db.habits.update({'habit': name_receive}, {'$set': {'habit': edited_name_receive}})
+    db.calendars.update({'title': name_receive}, {'$set': {'title': edited_name_receive}}, upsert=True, multi=True)
+
+    return jsonify({'result': 'success'})
 
 
 @app.route('/habits-date', methods=['GET'])

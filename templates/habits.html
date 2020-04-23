@@ -116,6 +116,34 @@
         </div>
 
         <script>
+            $("#external-events div").click((e) => {
+                let targetName = e.target.innerHTML;
+                const editMsg = prompt(`선택된 습관: ${targetName}🥰 변경하고 싶은 이름을 적어주세요`);
+                if (editMsg) {
+                    let newName = editMsg;
+                    // console.log(newName);
+                    e.target.innerHTML = newName;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/habits-edit",
+                        data: {
+                            title: targetName,
+                            newTitle: newName,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response["result"] == "success") {
+                                alert("변경 성공!");
+                                window.location.reload();
+                            } else {
+                                alert("서버 오류!");
+                            }
+                        },
+                    });
+                }
+            });
+
             function openChartModal() {
                 $("#chart__container").show();
             }
