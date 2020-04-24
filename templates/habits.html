@@ -55,8 +55,6 @@
             }
 
             .content {
-                width: 1000px;
-                height: 800px;
                 padding: 20px;
                 border: 1px solid #ccc;
                 position: fixed;
@@ -65,6 +63,20 @@
                 transform: translate(-50%, -50%);
                 z-index: 11;
                 background: #fff;
+            }
+
+            .chart__content {
+                width: 1000px;
+                height: 800px;
+            }
+
+            .addModal {
+                display: none;
+                position: relative;
+            }
+            .addModal__content {
+                width: 440px;
+                height: 200px;
             }
         </style>
     </head>
@@ -81,6 +93,14 @@
             {% for habit in habits %}
             <div class="fc-event">{{ habit.habit }}</div>
             {% endfor %}
+            <button onClick="openAddHabits()" type="button">습관추가</button>
+        </div>
+        <div id="addModal" class="addModal">
+            <div class="content addModal__content">
+                <small>등록하고싶은 습관을 입력해주세요</small>
+                <input type="text" id="habit" placeholder="습관" required />
+                <button type="button" onClick="addHabits()">등록</button>
+            </div>
         </div>
 
         <!-- 달력 -->
@@ -88,7 +108,7 @@
 
         <!-- 통계차트 -->
         <div id="chart__container">
-            <div class="content">
+            <div class="content chart__content">
                 <div class="content__month">
                     <select name="selectMonth" id="selectMonth">
                         <option value="01">JAN</option>
@@ -116,6 +136,31 @@
         </div>
 
         <script>
+            function openAddHabits() {
+                $("#addModal").show();
+            }
+
+            function addHabits() {
+                const currentEmail = location.search.split("=")[1];
+                const habit = $("#habit").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/habits-add",
+                    data: {
+                        email: currentEmail,
+                        habits: habit,
+                    },
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            alert("추가 성공!");
+                            window.location.reload();
+                        } else {
+                            alert("서버 오류!");
+                        }
+                    },
+                });
+            }
+
             $("#external-events div").click((e) => {
                 const currentEmail = location.search.split("=")[1];
                 let targetName = e.target.innerHTML;

@@ -46,6 +46,14 @@ def saving():
 
     return jsonify({'result': 'success', 'current_email': current_email})
 
+@app.route('/habits-add', methods=['POST'])
+def addHabits():
+    email_receive = request.form['email']
+    habit_receive = request.form['habits']
+
+    db.habits.insert_one({'email': email_receive, 'habit': habit_receive})
+    
+    return jsonify({'result': 'success'})
 
 @app.route('/habits-edit', methods=['POST'])
 def editName():

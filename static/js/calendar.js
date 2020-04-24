@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let calendar = new Calendar(calendarEl, {
         plugins: ["interaction", "dayGrid"],
         header: { left: "prev", center: "title", right: "next" },
-        editable: true,
+        editable: false,
         droppable: true,
         displayEventTime: false,
         eventReceive: function (event, _) {
