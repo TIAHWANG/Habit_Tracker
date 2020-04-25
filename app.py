@@ -25,6 +25,7 @@ def listing():
     for habit in habit_list:
         if habit['email'] == current_email:
             user_habit_list.append(habit)
+
     username = current_email.split("@")[0]
 
     return render_template("habits.html", username=username, email=current_email, habits=user_habit_list)
@@ -33,18 +34,18 @@ def listing():
 @app.route('/habits', methods=['POST'])
 def saving():
     email_receive = request.form['email']
-    habits_receive = request.form.getlist('habits[]')
+    habit_receive = request.form['habit']
+    color_receive = request.form['bgColor']
 
     # save current email
     current_email = email_receive
 
-    for h in habits_receive:
-        if str(h).strip() == "":
-            continue
-        habit = {'email': email_receive, 'habit': h}
+    # 습관이름이 빈칸이면 로그인되도록 설정
+    if str(habit_receive).strip() != "":
+        habit = {'email': email_receive, 'habit': habit_receive, 'color': color_receive}
         db.habits.insert_one(habit)
 
-    return jsonify({'result': 'success', 'current_email': current_email})
+    return jsonify({'result': 'success', 'current_email': current_email, 'bgColor': color_receive})
 
 @app.route('/habits-add', methods=['POST'])
 def addHabits():
@@ -52,7 +53,7 @@ def addHabits():
     habit_receive = request.form['habits']
 
     db.habits.insert_one({'email': email_receive, 'habit': habit_receive})
-    
+
     return jsonify({'result': 'success'})
 
 @app.route('/habits-edit', methods=['POST'])
@@ -60,9 +61,11 @@ def editName():
     email_receive = request.form['email']
     name_receive = request.form['title']
     edited_name_receive = request.form['newTitle']
+    color_receive = request.form['backgroundColor']
+    # print(color_receive)
 
-    db.habits.update_one({'email': email_receive, 'habit': name_receive}, {'$set': {'habit': edited_name_receive}})
-    db.calendars.update_many({'title': name_receive, 'email': email_receive}, {'$set': {'title': edited_name_receive}})
+    # db.habits.update_one({'email': email_receive, 'habit': name_receive}, {'$set': {'habit': edited_name_receive}})
+    # db.calendars.update_many({'title': name_receive, 'email': email_receive}, {'$set': {'title': edited_name_receive}})
 
     return jsonify({'result': 'success'})
 

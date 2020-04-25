@@ -1,46 +1,75 @@
+function bgLayerOpen() {
+    if (!$(".bgLayer").length) {
+        $('<div class="bgLayer"></div>').appendTo($("body"));
+    }
+    const object = $(".bgLayer");
+    const w = $(document).width() + 12;
+    const h = $(document).height();
+
+    object.css({ width: w, height: h });
+    object.fadeIn(1000);
+}
+
+function bgLayerClear() {
+    const object = $(".bgLayer");
+
+    if (object.length) {
+        object.fadeOut(1000, function () {
+            object.remove();
+        });
+    }
+}
+
 function openModal() {
-    let modal = $("#mainModal");
-    let content = $(".content");
-    let marginLeft = content.outerWidth() / 2;
-    let marginTop = content.outerHeight() / 2;
+    const modal = $("#mainModal");
+    const content = $(".content");
+    const marginLeft = content.outerWidth() / 2;
+    const marginTop = content.outerHeight() / 2;
 
     if (modal.css("display") === "none") {
-        modal.fadeIn("slow");
+        modal.fadeIn(400);
         content.css({
             "margin-top": -marginTop,
             "margin-left": -marginLeft,
         });
-        $(this).blur();
+        // $(this).blur();
     }
+    bgLayerOpen();
 }
 
 function posting() {
     const email = $("#email").val();
-    const habit1 = $("#habit1").val();
-    const habit2 = $("#habit2").val();
+    const habit = $("#habit").val();
+    const bgColor = $("#select-color option:selected").val();
 
     $.ajax({
         type: "POST",
         url: "/habits",
         data: {
             email: email,
-            habits: [habit1, habit2],
+            habit: habit,
+            bgColor: bgColor,
         },
         success: function (response) {
             if (response["result"] == "success") {
                 if (email === "") {
                     alert("이메일을 입력해주세요");
+                    bgLayerClear();
                     return;
                 }
-                if (habit1 === "" || habit2 == "") {
-                    alert("로그인 성공");
-                }
                 window.location.href = "/habits?email=" + response["current_email"];
+                // console.log(response);
             } else {
                 alert("서버 오류!");
             }
         },
     });
 
-    $("#mainModal").fadeOut("slow");
+    $("#mainModal").fadeOut(400);
+    bgLayerClear();
+}
+
+function closeModal() {
+    $("#mainModal").fadeOut(400);
+    bgLayerClear();
 }

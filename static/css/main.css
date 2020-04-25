@@ -24,7 +24,7 @@ button.openBtn {
 }
 .content {
     width: 440px;
-    height: 200px;
+    height: 250px;
     padding: 20px;
     border: 1px solid #ccc;
     position: fixed;
@@ -33,14 +33,7 @@ button.openBtn {
     z-index: 11;
     background: #fff;
 }
-.content input {
+input {
     width: 60%;
     padding: 5px;
-    display: block;
-}
-.content button {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    cursor: pointer;
 }

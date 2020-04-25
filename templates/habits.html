@@ -31,15 +31,33 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}?1=1" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?1=3" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/daygrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/calendar.js') }}?1=5"></script>
 
         <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            .bgLayer {
+                display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                opacity: 0.5;
+                filter: alpha(opacity=50);
+                z-index: 10;
+            }
             #external-events div.fc-event {
                 margin: 10px 0;
                 cursor: pointer;
@@ -47,7 +65,7 @@
                 border: none;
                 padding: 2px;
             }
-
+            #multiModal,
             #chart__container,
             #graph {
                 display: none;
@@ -65,6 +83,16 @@
                 background: #fff;
             }
 
+            .row:not(:first-child) {
+                width: 100%;
+                font-size: 14px;
+                margin: 15px 0;
+            }
+
+            .row:last-child {
+                text-align: right;
+            }
+
             .chart__content {
                 width: 1000px;
                 height: 800px;
@@ -74,16 +102,59 @@
                 display: none;
                 position: relative;
             }
-            .addModal__content {
+            .addModal__content,
+            .multiModal__content {
                 width: 440px;
                 height: 200px;
+            }
+
+            .multiModal__content .title {
+                border-bottom: 1px solid #e4e4e4;
+                padding-bottom: 10px;
+            }
+
+            .multiModal__content label {
+                display: inline-block;
+                max-width: 100%;
+            }
+            .multiModal__content label.label {
+                width: 30%;
+            }
+            .multiModal__content input {
+                display: inline-block;
+            }
+            button {
+                display: inline-block;
+                padding: 6px 12px;
+                margin-bottom: 0;
+                font-size: 12px;
+                font-weight: 400;
+                line-height: 1.42857143;
+                text-align: center;
+                vertical-align: middle;
+                cursor: pointer;
+                border: 1px solid transparent;
+                border-radius: 4px;
+            }
+            button.default-btn {
+                color: #333;
+                background-color: #fff;
+                border-color: #ccc;
+            }
+            button.delete-btn {
+                color: #fff;
+                background-color: #d9534f;
+                border-color: #d43f3a;
+            }
+            button.save-btn {
+                color: #fff;
+                background-color: #337ab7;
+                border-color: #2e6da4;
             }
         </style>
     </head>
     <body>
-        <a href="#statistics"><button onClick="openChartModal()" type="button">통계</button></a>
-        <h1>Calendar</h1>
-        <h3>안녕하세요 {{ username }}님!</h3>
+        <h1 class="title">{{ username }}님의 습관달력 😁</h1>
 
         <!-- 습관목록 -->
         <div id="external-events">
@@ -92,14 +163,50 @@
             </p>
             {% for habit in habits %}
             <div class="fc-event">{{ habit.habit }}</div>
+
             {% endfor %}
-            <button onClick="openAddHabits()" type="button">습관추가</button>
+            <button onClick="openAddHabits()" type="button" class="default-btn">습관추가</button>
+            <a href="#statistics"><button onClick="openChartModal()" type="button" class="default-btn">통계</button></a>
         </div>
+
+        <!-- 습관 수정/삭제 -->
+        <div id="multiModal" class="multiModal">
+            <div class="content multiModal__content">
+                <div class="title row">
+                    <h2>습관수정</h2>
+                </div>
+                <div class="row">
+                    <label class="label" for="habitName">습관이름</label>
+                    <input type="text" id="habitName" />
+                </div>
+                <div class="row">
+                    <label class="label" for="color">색상</label>
+                    <select name="color" id="select-color">
+                        <option value="#4d638c">남색</option>
+                        <option value="#83b799">초록</option>
+                        <option value="#ffa94d">주황</option>
+                        <option value="#e2cd6d">노랑</option>
+                        <option value="#c3b28f">베이지</option>
+                        <option value="#e86f68">핑쿠</option>
+                        <option value="#881d1d">버건디</option>
+                        <option value="#495057">회색</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <button type="button" class="default-btn" onClick="closeModal()">닫기</button>
+                    <button type="button" class="delete-btn">삭제</button>
+                    <button type="button" class="save-btn" id="save-btn">저장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 습관추가 -->
         <div id="addModal" class="addModal">
             <div class="content addModal__content">
                 <small>등록하고싶은 습관을 입력해주세요</small>
                 <input type="text" id="habit" placeholder="습관" required />
-                <button type="button" onClick="addHabits()">등록</button>
+                <button type="button" class="default-btn" onClick="addHabits()">등록</button>
+                <button type="button" class="default-btn" onClick="closeAdd()">닫기</button>
             </div>
         </div>
 
@@ -124,7 +231,8 @@
                         <option value="11">NOV</option>
                         <option value="12">DEC</option>
                     </select>
-                    <button id="btn" onClick="openChart()">보기</button>
+                    <button id="btn" onClick="openChart()" class="default-btn">보기</button>
+                    <button type="button" class="default-btn" onClick="closeChart()">닫기</button>
                 </div>
                 <div id="graph">
                     <div>
@@ -136,8 +244,37 @@
         </div>
 
         <script>
+            function bgLayerOpen() {
+                if (!$(".bgLayer").length) {
+                    $('<div class="bgLayer"></div>').appendTo($("body"));
+                }
+                const object = $(".bgLayer");
+                const w = $(document).width() + 12;
+                const h = $(document).height();
+
+                object.css({ width: w, height: h });
+                object.fadeIn(1000);
+            }
+
+            function bgLayerClear() {
+                const object = $(".bgLayer");
+
+                if (object.length) {
+                    object.fadeOut(1000, function () {
+                        object.remove();
+                    });
+                }
+            }
+
+            // 습관 등록 모달
             function openAddHabits() {
-                $("#addModal").show();
+                $("#addModal").fadeIn(400);
+                bgLayerOpen();
+            }
+
+            function closeAdd() {
+                $("#addModal").fadeOut(400);
+                bgLayerClear();
             }
 
             function addHabits() {
@@ -161,15 +298,22 @@
                 });
             }
 
+            // 습관 수정/삭제 모달
             $("#external-events div").click((e) => {
-                const currentEmail = location.search.split("=")[1];
-                let targetName = e.target.innerHTML;
-                const editMsg = prompt(`선택된 습관: ${targetName}🥰 변경하고 싶은 이름을 적어주세요`);
-                if (editMsg) {
-                    let newName = editMsg;
-                    console.log(newName);
-                    e.target.innerHTML = newName;
+                $("#multiModal").fadeIn(400);
+                bgLayerOpen();
 
+                const currentEmail = location.search.split("=")[1];
+                const targetName = e.target.innerHTML;
+                $("#habitName").val(targetName);
+
+                const bgColor = $("#select-color option:selected").val();
+
+                $("#save-btn").click(() => {
+                    const newName = $("#habitName").val();
+                    console.log(newName);
+                    const bgColor = $("#select-color option:selected").val();
+                    console.log(bgColor);
                     $.ajax({
                         type: "POST",
                         url: "/habits-edit",
@@ -177,22 +321,34 @@
                             email: currentEmail,
                             title: targetName,
                             newTitle: newName,
+                            backgroundColor: bgColor,
                         },
                         dataType: "json",
                         success: function (response) {
-                            if (response["result"] == "success") {
-                                alert("변경 성공!");
+                            if (response["result"] === "success") {
                                 window.location.reload();
                             } else {
-                                alert("서버 오류!");
+                                alert("error");
                             }
                         },
                     });
-                }
+                });
             });
 
+            function closeModal() {
+                $("#multiModal").fadeOut(400);
+                bgLayerClear();
+            }
+
+            // 통계 차트 모달
             function openChartModal() {
-                $("#chart__container").show();
+                $("#chart__container").fadeIn(400);
+                bgLayerOpen();
+            }
+
+            function closeChart() {
+                $("#chart__container").fadeOut(400);
+                bgLayerClear();
             }
 
             function groupBy(list, keyGetter) {

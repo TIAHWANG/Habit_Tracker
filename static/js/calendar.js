@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
             },
         ],
-        eventColor: "#4d638c",
+        // eventColor: "#4d638c",
     });
 
     calendar.render();
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function saveEvent(event) {
     const email = location.search.split("=")[1];
-
+    console.log(event);
     $.ajax({
         type: "POST",
         url: "/habits-date",
