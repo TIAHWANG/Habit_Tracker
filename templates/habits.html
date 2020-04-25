@@ -28,7 +28,7 @@
         <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=1" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=11" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?1=3" />
@@ -38,7 +38,7 @@
         <script src="{{ url_for('static', filename='js/vendor/daygrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/calendar.js') }}?1=5"></script>
+        <script src="{{ url_for('static', filename='js/calendar.js') }}?1=8"></script>
 
         <style>
             * {
@@ -61,10 +61,11 @@
             #external-events div.fc-event {
                 margin: 10px 0;
                 cursor: pointer;
-                background-color: #4d638c;
+                /* background-color: #4d638c; */
                 border: none;
                 padding: 2px;
             }
+            #addHabits,
             #multiModal,
             #chart__container,
             #graph {
@@ -98,30 +99,34 @@
                 height: 800px;
             }
 
-            .addModal {
-                display: none;
-                position: relative;
-            }
-            .addModal__content,
+            .addHabits__content,
             .multiModal__content {
                 width: 440px;
                 height: 200px;
             }
 
+            .addHabits__content .title,
             .multiModal__content .title {
                 border-bottom: 1px solid #e4e4e4;
                 padding-bottom: 10px;
             }
-
+            .addHabits__content label,
             .multiModal__content label {
                 display: inline-block;
                 max-width: 100%;
             }
+            .addHabits__content label.label,
             .multiModal__content label.label {
                 width: 30%;
             }
+            .addHabits__content input,
             .multiModal__content input {
                 display: inline-block;
+            }
+            .addHabits__content .row:last-child {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
             }
             button {
                 display: inline-block;
@@ -151,6 +156,46 @@
                 background-color: #337ab7;
                 border-color: #2e6da4;
             }
+            #external-events .fc-event.deep-blue,
+            .fc-event.deep-blue {
+                border: 1px solid #4d638c;
+                background-color: #4d638c;
+            }
+            #external-events .fc-event.green,
+            .fc-event.green {
+                border: 1px solid #83b799;
+                background-color: #83b799;
+            }
+            #external-events .fc-event.orange,
+            .fc-event.orange {
+                border: 1px solid #ffa94d;
+                background-color: #ffa94d;
+            }
+            #external-events .fc-event.yellow,
+            .fc-event.yellow {
+                border: 1px solid #e2cd6d;
+                background-color: #e2cd6d;
+            }
+            #external-events .fc-event.beige,
+            .fc-event.beige {
+                border: 1px solid #c3b28f;
+                background-color: #c3b28f;
+            }
+            #external-events .fc-event.pink,
+            .fc-event.pink {
+                border: 1px solid #e86f68;
+                background-color: #e86f68;
+            }
+            #external-events .fc-event.burgendy,
+            .fc-event.burgendy {
+                border: 1px solid #881d1d;
+                background-color: #881d1d;
+            }
+            #external-events .fc-event.grey,
+            .fc-event.grey {
+                border: 1px solid #495057;
+                background-color: #495057;
+            }
         </style>
     </head>
     <body>
@@ -162,8 +207,7 @@
                 <strong>😃 My Habits</strong>
             </p>
             {% for habit in habits %}
-            <div class="fc-event">{{ habit.habit }}</div>
-
+            <div class="fc-event {{habit.color}}">{{ habit.habit }}</div>
             {% endfor %}
             <button onClick="openAddHabits()" type="button" class="default-btn">습관추가</button>
             <a href="#statistics"><button onClick="openChartModal()" type="button" class="default-btn">통계</button></a>
@@ -182,31 +226,51 @@
                 <div class="row">
                     <label class="label" for="color">색상</label>
                     <select name="color" id="select-color">
-                        <option value="#4d638c">남색</option>
-                        <option value="#83b799">초록</option>
-                        <option value="#ffa94d">주황</option>
-                        <option value="#e2cd6d">노랑</option>
-                        <option value="#c3b28f">베이지</option>
-                        <option value="#e86f68">핑쿠</option>
-                        <option value="#881d1d">버건디</option>
-                        <option value="#495057">회색</option>
+                        <option value="deep-blue">남색</option>
+                        <option value="green">초록</option>
+                        <option value="orange">주황</option>
+                        <option value="yellow">노랑</option>
+                        <option value="beige">베이지</option>
+                        <option value="pink">핑쿠</option>
+                        <option value="burgendy">버건디</option>
+                        <option value="grey">회색</option>
                     </select>
                 </div>
                 <div class="row">
-                    <button type="button" class="default-btn" onClick="closeModal()">닫기</button>
-                    <button type="button" class="delete-btn">삭제</button>
+                    <button type="button" class="default-btn" id="close-btn">닫기</button>
+                    <button type="button" class="delete-btn" id="delete-btn">삭제</button>
                     <button type="button" class="save-btn" id="save-btn">저장</button>
                 </div>
             </div>
         </div>
 
         <!-- 습관추가 -->
-        <div id="addModal" class="addModal">
-            <div class="content addModal__content">
-                <small>등록하고싶은 습관을 입력해주세요</small>
-                <input type="text" id="habit" placeholder="습관" required />
-                <button type="button" class="default-btn" onClick="addHabits()">등록</button>
-                <button type="button" class="default-btn" onClick="closeAdd()">닫기</button>
+        <div id="addHabits" class="addHabits">
+            <div class="content addHabits__content">
+                <div class="title row">
+                    <h2>습관등록</h2>
+                </div>
+                <div class="row">
+                    <label class="label" for="habit">습관이름</label>
+                    <input type="text" id="habit" name="habit" />
+                </div>
+                <div class="row">
+                    <label class="label" for="color">색상</label>
+                    <select name="color" id="add__select-color">
+                        <option value="deep-blue">남색</option>
+                        <option value="green">초록</option>
+                        <option value="orange">주황</option>
+                        <option value="yellow">노랑</option>
+                        <option value="beige">베이지</option>
+                        <option value="pink">핑쿠</option>
+                        <option value="burgendy">버건디</option>
+                        <option value="grey">회색</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <button type="button" class="default-btn" onClick="closeAddHabits()">닫기</button>
+                    <button type="button" class="save-btn" onClick="addHabits()">등록</button>
+                </div>
             </div>
         </div>
 
@@ -244,6 +308,40 @@
         </div>
 
         <script>
+            function saveEvent(event) {
+                const email = location.search.split("=")[1];
+                const colorName = event.draggedEl.classList[1];
+
+                if (colorName === "deep-blue") color = "#4d638c";
+                else if (colorName === "green") color = "#83b799";
+                else if (colorName === "orange") color = "#ffa94d";
+                else if (colorName === "yellow") color = "#e2cd6d";
+                else if (colorName === "beige") color = "#c3b28f";
+                else if (colorName === "pink") color = "#e86f68";
+                else if (colorName === "burgendy") color = "#881d1d";
+                else if (colorName === "grey") color = "#495057";
+
+                $.ajax({
+                    type: "POST",
+                    url: "/habits-date",
+                    data: {
+                        date: moment(event.event.start).format("YYYY-MM-DDThh:mm"),
+                        title: event.event.title,
+                        email: email,
+                        colorName: colorName,
+                        color: color,
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response["result"] == "success") {
+                            window.location.reload();
+                        } else {
+                            alert("서버 오류!");
+                        }
+                    },
+                });
+            }
+
             function bgLayerOpen() {
                 if (!$(".bgLayer").length) {
                     $('<div class="bgLayer"></div>').appendTo($("body"));
@@ -268,28 +366,30 @@
 
             // 습관 등록 모달
             function openAddHabits() {
-                $("#addModal").fadeIn(400);
+                $("#addHabits").fadeIn(400);
                 bgLayerOpen();
             }
 
-            function closeAdd() {
-                $("#addModal").fadeOut(400);
+            function closeAddHabits() {
+                $("#addHabits").fadeOut(400);
                 bgLayerClear();
             }
 
             function addHabits() {
                 const currentEmail = location.search.split("=")[1];
                 const habit = $("#habit").val();
+                const color = $("#add__select-color option:checked").val();
+                console.log(habit, color);
                 $.ajax({
                     type: "POST",
                     url: "/habits-add",
                     data: {
                         email: currentEmail,
-                        habits: habit,
+                        habit: habit,
+                        color: color,
                     },
                     success: function (response) {
                         if (response["result"] == "success") {
-                            alert("추가 성공!");
                             window.location.reload();
                         } else {
                             alert("서버 오류!");
@@ -303,17 +403,78 @@
                 $("#multiModal").fadeIn(400);
                 bgLayerOpen();
 
+                // 처음 설정한 habit 색깔 select box에 뜨게 설정
+                const colorName = e.target.classList[1];
+
+                if (e.target.classList[1] === "deep-blue") {
+                    $("#select-color option:eq(0)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "green") {
+                    $("#select-color option:eq(1)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "orange") {
+                    $("#select-color option:eq(2)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "yellow") {
+                    $("#select-color option:eq(3)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "beige") {
+                    $("#select-color option:eq(4)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "pink") {
+                    $("#select-color option:eq(5)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "burgendy") {
+                    $("#select-color option:eq(6)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "grey") {
+                    $("#select-color option:eq(7)").prop("selected", true);
+                }
+
                 const currentEmail = location.search.split("=")[1];
+
+                // 모달창에 원래 습관 이름 보이기
                 const targetName = e.target.innerHTML;
                 $("#habitName").val(targetName);
 
-                const bgColor = $("#select-color option:selected").val();
+                // 습관 삭제
+                $("#delete-btn").click((e) => {
+                    // console.log(targetName);
+                    $.ajax({
+                        type: "POST",
+                        url: "/habits-delete2",
+                        data: {
+                            email: currentEmail,
+                            title: targetName,
+                        },
+                        success: () => {
+                            $("#multiModal").fadeOut(400);
+                            bgLayerClear();
+                            window.location.reload();
+                        },
+                    });
+                });
 
+                // 습관 수정사항 변경
                 $("#save-btn").click(() => {
                     const newName = $("#habitName").val();
-                    console.log(newName);
-                    const bgColor = $("#select-color option:selected").val();
-                    console.log(bgColor);
+                    const newColorName = $("#select-color option:checked").val();
+                    // console.log(colorName, newColorName);
+
+                    if (newColorName === "deep-blue") color = "#4d638c";
+                    else if (newColorName === "green") color = "#83b799";
+                    else if (newColorName === "orange") color = "#ffa94d";
+                    else if (newColorName === "yellow") color = "#e2cd6d";
+                    else if (newColorName === "beige") color = "#c3b28f";
+                    else if (newColorName === "pink") color = "#e86f68";
+                    else if (newColorName === "burgendy") color = "#881d1d";
+                    else if (newColorName === "grey") color = "#495057";
+
+                    if (colorName !== newColorName) {
+                        $(e.target).attr(`${colorName}`, `${newColorName}`);
+                        $(".fc-event").attr(`${colorName}`, `${newColorName}`);
+                    }
+
                     $.ajax({
                         type: "POST",
                         url: "/habits-edit",
@@ -321,7 +482,9 @@
                             email: currentEmail,
                             title: targetName,
                             newTitle: newName,
-                            backgroundColor: bgColor,
+                            colorName: colorName,
+                            newColorName: newColorName,
+                            color: color,
                         },
                         dataType: "json",
                         success: function (response) {
@@ -333,12 +496,13 @@
                         },
                     });
                 });
-            });
 
-            function closeModal() {
-                $("#multiModal").fadeOut(400);
-                bgLayerClear();
-            }
+                // 모달창 닫기
+                $("#close-btn").click(() => {
+                    $("#multiModal").fadeOut(400);
+                    bgLayerClear();
+                });
+            });
 
             // 통계 차트 모달
             function openChartModal() {

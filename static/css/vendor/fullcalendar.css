@@ -260,12 +260,11 @@ temporary rendered events).
     font-size: 0.85em;
     line-height: 1.4;
     border-radius: 3px;
-    border: 1px solid #4d638c;
 }
 
 .fc-event,
 .fc-event-dot {
-    background-color: #4d638c;
+    background-color: inherit;
     /* default BACKGROUND color */
 }
 
@@ -345,8 +344,8 @@ temporary rendered events).
     bottom: -1px;
     left: -1px;
     /* darkening effect */
-    background: #000;
-    opacity: 0.25;
+    /* background: #000;
+    opacity: 0.25; */
 }
 
 /* Event Dragging
@@ -355,9 +354,9 @@ temporary rendered events).
     box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
 }
 
-.fc-event.fc-dragging:not(.fc-selected) {
+/* .fc-event.fc-dragging:not(.fc-selected) {
     opacity: 0.75;
-}
+} */
 
 /* Horizontal Events
 --------------------------------------------------------------------------------------------------*/

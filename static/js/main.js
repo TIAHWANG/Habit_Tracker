@@ -58,7 +58,6 @@ function posting() {
                     return;
                 }
                 window.location.href = "/habits?email=" + response["current_email"];
-                // console.log(response);
             } else {
                 alert("서버 오류!");
             }

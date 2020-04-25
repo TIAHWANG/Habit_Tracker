@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: { targetId_give: targetId },
                     success: function (response) {
                         if (response["result"] == "success") {
-                            alert("삭제 성공!");
                             window.location.reload();
                         }
                     },
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
             },
         ],
-        // eventColor: "#4d638c",
     });
 
     calendar.render();
@@ -79,7 +77,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function saveEvent(event) {
     const email = location.search.split("=")[1];
-    console.log(event);
+    const colorName = event.draggedEl.classList[1];
+
+    if (colorName === "deep-blue") color = "#4d638c";
+    else if (colorName === "green") color = "#83b799";
+    else if (colorName === "orange") color = "#ffa94d";
+    else if (colorName === "yellow") color = "#e2cd6d";
+    else if (colorName === "beige") color = "#c3b28f";
+    else if (colorName === "pink") color = "#e86f68";
+    else if (colorName === "burgendy") color = "#881d1d";
+    else if (colorName === "grey") color = "#495057";
+
     $.ajax({
         type: "POST",
         url: "/habits-date",
@@ -87,11 +95,13 @@ function saveEvent(event) {
             date: moment(event.event.start).format("YYYY-MM-DDThh:mm"),
             title: event.event.title,
             email: email,
+            colorName: colorName,
+            color: color,
         },
         dataType: "json",
         success: function (response) {
             if (response["result"] == "success") {
-                alert("저장 성공!");
+                window.location.reload();
             } else {
                 alert("서버 오류!");
             }
