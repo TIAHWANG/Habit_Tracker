@@ -8,6 +8,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+        <!-- favicon -->
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
+
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script
@@ -27,11 +30,19 @@
         <!-- 구글폰트 -->
         <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
+        <!-- FontAwesome -->
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous"
+        />
+
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=11" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}?1=1" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?1=3" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}?1=1" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=2" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=14" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=6" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
@@ -39,173 +50,43 @@
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
         <script src="{{ url_for('static', filename='js/calendar.js') }}?1=8"></script>
-
         <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
+            #calender {
+                margin-top: 20px;
             }
-            .bgLayer {
-                display: none;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #000;
-                opacity: 0.5;
-                filter: alpha(opacity=50);
-                z-index: 10;
+            .fc-day-header.fc-widget-header {
+                color: #fff;
+                background-color: #fba09d;
             }
-            #external-events div.fc-event {
-                margin: 10px 0;
-                cursor: pointer;
-                /* background-color: #4d638c; */
-                border: none;
-                padding: 2px;
+            .chart__content .box:first-child {
+                height: 5%;
+                display: flex;
+                justify-content: space-between;
             }
-            #addHabits,
-            #multiModal,
-            #chart__container,
-            #graph {
-                display: none;
-                position: relative;
-            }
-
-            .content {
-                padding: 20px;
-                border: 1px solid #ccc;
-                position: fixed;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 11;
-                background: #fff;
-            }
-
-            .row:not(:first-child) {
-                width: 100%;
-                font-size: 14px;
-                margin: 15px 0;
-            }
-
-            .row:last-child {
-                text-align: right;
-            }
-
-            .chart__content {
-                width: 1000px;
-                height: 800px;
-            }
-
-            .addHabits__content,
-            .multiModal__content {
-                width: 440px;
-                height: 200px;
-            }
-
-            .addHabits__content .title,
-            .multiModal__content .title {
-                border-bottom: 1px solid #e4e4e4;
-                padding-bottom: 10px;
-            }
-            .addHabits__content label,
-            .multiModal__content label {
-                display: inline-block;
-                max-width: 100%;
-            }
-            .addHabits__content label.label,
-            .multiModal__content label.label {
-                width: 30%;
-            }
-            .addHabits__content input,
-            .multiModal__content input {
-                display: inline-block;
-            }
-            .addHabits__content .row:last-child {
-                position: absolute;
-                bottom: 10px;
-                right: 10px;
-            }
-            button {
-                display: inline-block;
-                padding: 6px 12px;
-                margin-bottom: 0;
-                font-size: 12px;
-                font-weight: 400;
-                line-height: 1.42857143;
+            .chart__content .box:last-child {
+                height: 90%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 text-align: center;
-                vertical-align: middle;
-                cursor: pointer;
-                border: 1px solid transparent;
-                border-radius: 4px;
             }
-            button.default-btn {
-                color: #333;
-                background-color: #fff;
-                border-color: #ccc;
+            .chart__column span {
+                font-size: 16px;
             }
-            button.delete-btn {
-                color: #fff;
-                background-color: #d9534f;
-                border-color: #d43f3a;
-            }
-            button.save-btn {
-                color: #fff;
-                background-color: #337ab7;
-                border-color: #2e6da4;
-            }
-            #external-events .fc-event.deep-blue,
-            .fc-event.deep-blue {
-                border: 1px solid #4d638c;
-                background-color: #4d638c;
-            }
-            #external-events .fc-event.green,
-            .fc-event.green {
-                border: 1px solid #83b799;
-                background-color: #83b799;
-            }
-            #external-events .fc-event.orange,
-            .fc-event.orange {
-                border: 1px solid #ffa94d;
-                background-color: #ffa94d;
-            }
-            #external-events .fc-event.yellow,
-            .fc-event.yellow {
-                border: 1px solid #e2cd6d;
-                background-color: #e2cd6d;
-            }
-            #external-events .fc-event.beige,
-            .fc-event.beige {
-                border: 1px solid #c3b28f;
-                background-color: #c3b28f;
-            }
-            #external-events .fc-event.pink,
-            .fc-event.pink {
-                border: 1px solid #e86f68;
-                background-color: #e86f68;
-            }
-            #external-events .fc-event.burgendy,
-            .fc-event.burgendy {
-                border: 1px solid #881d1d;
-                background-color: #881d1d;
-            }
-            #external-events .fc-event.grey,
-            .fc-event.grey {
-                border: 1px solid #495057;
-                background-color: #495057;
+            .box h2 {
+                margin: 20px 0;
             }
         </style>
     </head>
+
     <body>
-        <h1 class="title">{{ username }}님의 습관달력 😁</h1>
+        <div class="header">
+            <h1>{{ username }}님의 습관달력&nbsp;<i class="fas fa-book-open"></i></h1>
+        </div>
 
         <!-- 습관목록 -->
         <div id="external-events">
-            <p>
-                <strong>😃 My Habits</strong>
-            </p>
+            <p><i class="far fa-list-alt"></i>&nbsp;<strong>나의 습관목록</strong></p>
             {% for habit in habits %}
             <div class="fc-event {{habit.color}}">{{ habit.habit }}</div>
             {% endfor %}
@@ -214,16 +95,14 @@
         </div>
 
         <!-- 습관 수정/삭제 -->
-        <div id="multiModal" class="multiModal">
+        <div id="multiModal" class="modal">
             <div class="content multiModal__content">
-                <div class="title row">
+                <div class="row">
                     <h2>습관수정</h2>
                 </div>
                 <div class="row">
                     <label class="label" for="habitName">습관이름</label>
                     <input type="text" id="habitName" />
-                </div>
-                <div class="row">
                     <label class="label" for="color">색상</label>
                     <select name="color" id="select-color">
                         <option value="deep-blue">남색</option>
@@ -245,16 +124,14 @@
         </div>
 
         <!-- 습관추가 -->
-        <div id="addHabits" class="addHabits">
+        <div id="addHabits" class="modal">
             <div class="content addHabits__content">
-                <div class="title row">
+                <div class="row">
                     <h2>습관등록</h2>
                 </div>
                 <div class="row">
                     <label class="label" for="habit">습관이름</label>
                     <input type="text" id="habit" name="habit" />
-                </div>
-                <div class="row">
                     <label class="label" for="color">색상</label>
                     <select name="color" id="add__select-color">
                         <option value="deep-blue">남색</option>
@@ -278,30 +155,37 @@
         <div id="calendar"></div>
 
         <!-- 통계차트 -->
-        <div id="chart__container">
+        <div id="chart__container" class="modal">
             <div class="content chart__content">
-                <div class="content__month">
-                    <select name="selectMonth" id="selectMonth">
-                        <option value="01">JAN</option>
-                        <option value="02">FEB</option>
-                        <option value="03">MAR</option>
-                        <option value="04">APR</option>
-                        <option value="05">MAY</option>
-                        <option value="06">JUN</option>
-                        <option value="07">JUL</option>
-                        <option value="08">AUG</option>
-                        <option value="09">SEP</option>
-                        <option value="10">OCT</option>
-                        <option value="11">NOV</option>
-                        <option value="12">DEC</option>
-                    </select>
-                    <button id="btn" onClick="openChart()" class="default-btn">보기</button>
-                    <button type="button" class="default-btn" onClick="closeChart()">닫기</button>
+                <div class="box">
+                    <div class="chart__column">
+                        <span>월 선택 :</span>
+                        <select name="selectMonth" id="selectMonth">
+                            <option value="01">JAN</option>
+                            <option value="02">FEB</option>
+                            <option value="03">MAR</option>
+                            <option value="04">APR</option>
+                            <option value="05">MAY</option>
+                            <option value="06">JUN</option>
+                            <option value="07">JUL</option>
+                            <option value="08">AUG</option>
+                            <option value="09">SEP</option>
+                            <option value="10">OCT</option>
+                            <option value="11">NOV</option>
+                            <option value="12">DEC</option>
+                        </select>
+                        <button type="button" onClick="openChart()" class="default-btn">보기</button>
+                    </div>
+                    <div class="chart__column">
+                        <button type="button" class="default-btn" onClick="closeChart()">닫기</button>
+                    </div>
                 </div>
-                <div id="graph">
-                    <div>
+                <div class="box">
+                    <div id="graph" class="modal">
                         <h2>한달에 이만큼 했네요 😄</h2>
-                        <canvas id="myChart" height="350" width="600"></canvas>
+                        <div>
+                            <canvas id="myChart" height="500" width="1000"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -366,7 +250,19 @@
 
             // 습관 등록 모달
             function openAddHabits() {
-                $("#addHabits").fadeIn(400);
+                const modal = $("#addHabits");
+                const content = $("#addHabits .addHabits__content");
+                const marginLeft = content.outerWidth() / 2;
+                const marginTop = content.outerHeight() / 2;
+
+                if (modal.css("display") === "none") {
+                    modal.fadeIn(400);
+                    content.css({
+                        "margin-top": -marginTop,
+                        "margin-left": -marginLeft,
+                    });
+                    // $(this).blur();
+                }
                 bgLayerOpen();
             }
 
@@ -400,7 +296,18 @@
 
             // 습관 수정/삭제 모달
             $("#external-events div").click((e) => {
-                $("#multiModal").fadeIn(400);
+                const modal = $("#multiModal");
+                const content = $("#multiModal .multiModal__content");
+                const marginLeft = content.outerWidth() / 2;
+                const marginTop = content.outerHeight() / 2;
+
+                if (modal.css("display") === "none") {
+                    modal.fadeIn(400);
+                    content.css({
+                        "margin-top": -marginTop,
+                        "margin-left": -marginLeft,
+                    });
+                }
                 bgLayerOpen();
 
                 // 처음 설정한 habit 색깔 select box에 뜨게 설정
@@ -506,7 +413,18 @@
 
             // 통계 차트 모달
             function openChartModal() {
-                $("#chart__container").fadeIn(400);
+                const modal = $("#chart__container");
+                const content = $("#chart__container .chart__content");
+                const marginLeft = content.outerWidth() / 2;
+                const marginTop = content.outerHeight() / 2;
+
+                if (modal.css("display") === "none") {
+                    modal.fadeIn(400);
+                    content.css({
+                        "margin-top": -marginTop,
+                        "margin-left": -marginLeft,
+                    });
+                }
                 bgLayerOpen();
             }
 
@@ -590,23 +508,7 @@
                                     datasets: [
                                         {
                                             data: countByHabits,
-                                            backgroundColor: [
-                                                "rgba(255, 99, 132, 0.2)",
-                                                "rgba(54, 162, 235, 0.2)",
-                                                "rgba(255, 206, 86, 0.2)",
-                                                "rgba(75, 192, 192, 0.2)",
-                                                "rgba(153, 102, 255, 0.2)",
-                                                "rgba(255, 159, 64, 0.2)",
-                                            ],
-                                            borderColor: [
-                                                "rgba(255, 99, 132, 1)",
-                                                "rgba(54, 162, 235, 1)",
-                                                "rgba(255, 206, 86, 1)",
-                                                "rgba(75, 192, 192, 1)",
-                                                "rgba(153, 102, 255, 1)",
-                                                "rgba(255, 159, 64, 1)",
-                                            ],
-                                            borderWidth: 1,
+                                            backgroundColor: ["#3A4564", "#D7D1E5", "#EA9FA2", "#FFDBDC", "#AAAAAA", "#F8D3A5", "#81B3AE"],
                                         },
                                     ],
                                 },

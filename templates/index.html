@@ -8,6 +8,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+        <!-- favicon -->
+        <link rel="icon" href="favicon.png" />
+
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script
@@ -24,100 +27,47 @@
         <!-- 구글폰트 -->
         <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet" />
 
+        <!-- FontAwesome -->
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous"
+        />
+
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?1=4" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=14" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/mainPage.css') }}?1=9" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/main.js') }}?1=7"></script>
-
-        <style>
-            .bgLayer {
-                display: none;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #000;
-                opacity: 0.2;
-                filter: alpha(opacity=50);
-                z-index: 10;
-            }
-            small {
-                display: block;
-                font-size: 10px;
-            }
-            button {
-                display: inline-block;
-                padding: 6px 12px;
-                margin-bottom: 0;
-                font-size: 12px;
-                font-weight: 400;
-                line-height: 1.42857143;
-                text-align: center;
-                vertical-align: middle;
-                cursor: pointer;
-                border: 1px solid transparent;
-                border-radius: 4px;
-            }
-            button.save-btn {
-                color: #fff;
-                background-color: #337ab7;
-                border-color: #2e6da4;
-            }
-            button.default-btn {
-                color: #333;
-                background-color: #fff;
-                border-color: #ccc;
-            }
-            .row:not(:first-child) {
-                width: 100%;
-                font-size: 14px;
-                margin: 15px 0;
-            }
-            label {
-                display: inline-block;
-                max-width: 100%;
-            }
-            label.label {
-                width: 30%;
-            }
-            .row:last-child {
-                text-align: right;
-            }
-            .wrap h1 {
-                font-size: 60px;
-                font-weight: 900;
-                margin: 10px 0;
-            }
-            .wrap span,
-            .wrap button {
-                margin: 20px 0;
-            }
-        </style>
     </head>
     <body>
         <div class="wrap">
-            <h1>Habit Tracker</h1>
-            <span>기록하고 싶은 습관들을 한눈에 볼 수 있어요</span>
-            <button onclick="openModal()" class="default-btn" type="button">
-                습관 등록
-            </button>
-            <div id="mainModal" class="mainModal">
-                <div class="content">
+            <div class="title">
+                <h1>Habit Tracker</h1>
+            </div>
+            <div class="container">
+                <i class="fas fa-book"></i>
+                <p>기록하고 싶은 습관들을 한눈에 볼 수 있어요</p>
+                <button onclick="openModal()" class="default-btn mainBtn" type="button">
+                    습관 등록
+                </button>
+            </div>
+            <div id="mainModal" class="modal">
+                <div class="content main__content">
                     <div class="row">
-                        <small>처음이시면, 이메일과 습관을 1개 입력해주세요</small>
-                        <small>방문한적이 있다면, 이메일만 입력해주세요</small>
+                        <small><span>처음</span>이시면, <span>이메일과 습관을 1개</span>를 입력해주세요</small>
+                        <small>색은 <span>원하는 색상</span>으로 선택해주세요</small>
+                        <small><span>방문</span>한적이 있다면, <span>이메일</span>만 입력해주세요</small>
                     </div>
                     <div class="row">
                         <label class="label" for="email">이메일</label>
                         <input type="email" name="email" id="email" placeholder="이메일을 입력해주세요" required />
-                    </div>
-                    <div class="row">
+
                         <label class="label" for="habit">습관이름</label>
-                        <input type="text" name="habit" id="habit" placeholder="습관" required />
-                    </div>
-                    <div class="row">
+                        <input type="text" name="habit" id="habit" placeholder="습관이름 입력해주세요" required />
+
                         <label class="label" for="color">색상</label>
                         <select name="color" id="select-color">
                             <option value="deep-blue">남색</option>
@@ -130,7 +80,6 @@
                             <option value="grey">회색</option>
                         </select>
                     </div>
-
                     <div class="row">
                         <button type="button" onclick="posting()" class="save-btn">등록</button>
                         <button type="button" onclick="closeModal()" class="default-btn">닫기</button>

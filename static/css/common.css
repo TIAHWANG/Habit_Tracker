@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 1300px;
+}
+
+/* 모달창 */
+.modal {
+    display: none;
+    position: relative;
+}
+.content {
+    padding: 20px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 11;
+    background: #fff;
+}
+.row {
+    width: 100%;
+    font-size: 14px;
+    margin-top: 15px;
+}
+.row:last-child {
+    text-align: right;
+}
+label {
+    display: inline-block;
+    max-width: 100%;
+}
+label.label {
+    width: 30%;
+}
+input {
+    all: unset;
+    width: 60%;
+    padding: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #fba09d;
+}
+input:focus {
+    outline: none;
+}
+
+/* buttons */
+button {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+button:focus {
+    outline: none;
+}
+button.openBtn {
+    margin-top: 10px;
+}
+button.default-btn {
+    color: #fba09d;
+    background-color: #fff;
+    border-color: #fba09d;
+}
+button.save-btn {
+    color: #93a7d2;
+    background-color: #fff;
+    border-color: #93a7d2;
+}
+button.delete-btn {
+    color: #af5166;
+    background-color: #fff;
+    border-color: #af5166;
+}
+.default-btn:hover {
+    background-color: #fba09d;
+    color: #fff;
+    transition: 0.5s;
+}
+.save-btn:hover {
+    background-color: #93a7d2;
+    color: #fff;
+    transition: 0.5s;
+}
+.delete-btn:hover {
+    background-color: #af5166;
+    color: #fff;
+    transition: 0.5s;
+}
+
+/* 모달창 열었을때 백그라운드 */
+.bgLayer {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.2;
+    filter: alpha(opacity=50);
+    z-index: 10;
+}

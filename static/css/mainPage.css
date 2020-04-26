@@ -1,0 +1,68 @@
+.wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fba09d;
+    color: #fff;
+    font-size: 18px;
+}
+.title {
+    width: 100%;
+    height: 100px;
+    background-color: #fff;
+}
+.title h1 {
+    font-size: 50px;
+    font-weight: 900;
+    color: #fba09d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+.container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container i {
+    font-size: 200px;
+    margin: 35px;
+}
+.container button {
+    margin-top: 40px;
+}
+.mainBtn {
+    font-size: 18px;
+    padding: 10px 20px;
+}
+/* 모달창 */
+.main__content {
+    width: 600px;
+    height: 300px;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.main__content .row:nth-child(2) {
+    border-top: 1px solid #fba09d;
+    padding-top: 20px;
+}
+.main__content small {
+    display: block;
+    font-size: 12px;
+}
+.main__content small::before {
+    content: "👉🏻";
+}
+.main__content small span {
+    font-weight: 600;
+}
