@@ -65,120 +65,6 @@ function addHabits() {
     });
 }
 
-// 습관 수정/삭제 모달
-$("#external-events div").click((e) => {
-    const modal = $("#multiModal");
-    const content = $("#multiModal .multiModal__content");
-    const marginLeft = content.outerWidth() / 2;
-    const marginTop = content.outerHeight() / 2;
-
-    if (modal.css("display") === "none") {
-        modal.fadeIn(400);
-        content.css({
-            "margin-top": -marginTop,
-            "margin-left": -marginLeft,
-        });
-    }
-    bgLayerOpen();
-
-    // 처음 설정한 habit 색깔 select box에 뜨게 설정
-    const colorName = e.target.classList[1];
-
-    if (e.target.classList[1] === "deep-blue") {
-        $("#select-color option:eq(0)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "green") {
-        $("#select-color option:eq(1)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "orange") {
-        $("#select-color option:eq(2)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "yellow") {
-        $("#select-color option:eq(3)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "beige") {
-        $("#select-color option:eq(4)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "pink") {
-        $("#select-color option:eq(5)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "burgendy") {
-        $("#select-color option:eq(6)").prop("selected", true);
-    }
-    if (e.target.classList[1] === "grey") {
-        $("#select-color option:eq(7)").prop("selected", true);
-    }
-
-    const currentEmail = location.search.split("=")[1];
-
-    // 모달창에 원래 습관 이름 보이기
-    const targetName = e.target.innerHTML;
-    $("#habitName").val(targetName);
-
-    // 습관 삭제
-    $("#delete-btn").click((e) => {
-        $.ajax({
-            type: "POST",
-            url: "/habits-delete2",
-            data: {
-                email: currentEmail,
-                title: targetName,
-            },
-            success: () => {
-                $("#multiModal").fadeOut(400);
-                bgLayerClear();
-                window.location.reload();
-            },
-        });
-    });
-
-    // 습관 수정사항 변경
-    $("#save-btn").click(() => {
-        const newName = $("#habitName").val();
-        const newColorName = $("#select-color option:checked").val();
-
-        if (newColorName === "deep-blue") color = "#4d638c";
-        else if (newColorName === "green") color = "#83b799";
-        else if (newColorName === "orange") color = "#ffa94d";
-        else if (newColorName === "yellow") color = "#e2cd6d";
-        else if (newColorName === "beige") color = "#c3b28f";
-        else if (newColorName === "pink") color = "#e86f68";
-        else if (newColorName === "burgendy") color = "#881d1d";
-        else if (newColorName === "grey") color = "#495057";
-
-        if (colorName !== newColorName) {
-            $(e.target).attr(`${colorName}`, `${newColorName}`);
-            $(".fc-event").attr(`${colorName}`, `${newColorName}`);
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/habits-edit",
-            data: {
-                email: currentEmail,
-                title: targetName,
-                newTitle: newName,
-                colorName: colorName,
-                newColorName: newColorName,
-                color: color,
-            },
-            dataType: "json",
-            success: function (response) {
-                if (response["result"] === "success") {
-                    window.location.reload();
-                } else {
-                    alert("error");
-                }
-            },
-        });
-    });
-
-    $("#close-btn").click(() => {
-        $("#multiModal").fadeOut(400);
-        bgLayerClear();
-    });
-});
-
 // 통계 차트 모달
 function openChartModal() {
     const modal = $("#chart__container");
@@ -197,8 +83,12 @@ function openChartModal() {
 }
 
 function closeChart() {
+    const currentEmail = location.search.split("=")[1];
+
     $("#chart__container").fadeOut(400);
     bgLayerClear();
+
+    window.location.href = `/habits?email=${currentEmail}`;
 }
 
 function groupBy(list, keyGetter) {
