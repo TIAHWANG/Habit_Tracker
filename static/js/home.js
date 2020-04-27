@@ -32,7 +32,6 @@ function openModal() {
             "margin-top": -marginTop,
             "margin-left": -marginLeft,
         });
-        // $(this).blur();
     }
     bgLayerOpen();
 }

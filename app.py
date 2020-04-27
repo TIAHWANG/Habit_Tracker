@@ -3,8 +3,6 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-from bs4 import BeautifulSoup
-
 from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
@@ -67,8 +65,6 @@ def editName():
     color_name = request.form['colorName']
     edited_color_name = request.form['newColorName']
     color_receive = request.form['color']
-    # print(color_name, edited_color_name)
-    # print(color_receive)
 
     if (title_receive != edited_title_receive):
         db.habits.update_one({'email': email_receive, 'habit': title_receive},
@@ -134,8 +130,6 @@ def deleteEvents():
 def deleteHabit():
     email_receive = request.form['email']
     title_receive = request.form['title']
-
-    # print(email_receive, title_receive)
 
     db.habits.delete_one({'email': email_receive, 'habit': title_receive})
     db.calendars.delete_many({'email': email_receive, 'title': title_receive})

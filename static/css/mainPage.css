@@ -42,6 +42,12 @@
     font-size: 18px;
     padding: 10px 20px;
 }
+button.default-btn.mainBtn:hover {
+    color: #fff;
+    background-color: #fba09d;
+    border-color: #fff;
+    transition: 0.5s;
+}
 /* 모달창 */
 .main__content {
     width: 600px;

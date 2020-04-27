@@ -10,6 +10,8 @@ h1 {
     align-items: center;
     color: #fff;
 }
+
+/* 습관 목록 모달창 */
 #external-events {
     text-align: center;
     position: fixed;
@@ -27,9 +29,15 @@ h1 {
     cursor: pointer;
     padding: 2px;
 }
+
+/* 달력 */
 #calendar {
     max-width: 900px;
     margin: 40px auto;
+}
+.fc-day-header.fc-widget-header {
+    color: #fff;
+    background-color: #fba09d;
 }
 
 /* 모달창들 */
@@ -51,6 +59,26 @@ h1 {
     position: absolute;
     bottom: 10px;
     right: 10px;
+}
+
+/* 차트 모달창 */
+.chart__content .box:first-child {
+    height: 5%;
+    display: flex;
+    justify-content: space-between;
+}
+.chart__content .box:last-child {
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.chart__column span {
+    font-size: 16px;
+}
+.box h2 {
+    margin: 20px 0;
 }
 
 /* habit color */

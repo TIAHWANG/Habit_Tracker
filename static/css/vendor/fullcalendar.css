@@ -539,6 +539,7 @@ a.fc-more:hover {
 /* Utilities
 --------------------------------------------------------------------------------------------------*/
 .fc-unselectable {
+    text-align: center;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
