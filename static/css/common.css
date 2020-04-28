@@ -15,6 +15,27 @@ a {
     cursor: pointer;
 }
 
+/* input 에러메세지 */
+.form-control input {
+    margin-bottom: 22px;
+}
+.form-control {
+    position: relative;
+}
+.form-control.error input {
+    border-color: #ed4337;
+}
+.form-control p {
+    color: #ed4337;
+    position: absolute;
+    bottom: 3px;
+    left: 32%;
+    visibility: hidden;
+}
+.form-control.error p {
+    visibility: visible;
+}
+
 /* 모달창 */
 .modal {
     display: none;

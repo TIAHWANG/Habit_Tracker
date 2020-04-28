@@ -11,6 +11,19 @@ h1 {
     color: #fff;
 }
 
+/* 화면 상단 버튼들 */
+.btn__container {
+    padding-top: 20px;
+    background-color: #fff;
+    color: #fba09d;
+}
+.btn__container button {
+    text-transform: uppercase;
+}
+.btn__container button:first-child {
+    margin-right: 5px;
+}
+
 /* 습관 목록 모달창 */
 #external-events {
     text-align: center;

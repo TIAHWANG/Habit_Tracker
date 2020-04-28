@@ -41,29 +41,16 @@
         <!-- CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=4" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=16" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=8" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=18" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=9" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/daygrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/calendar.js') }}?1=40"></script>
-        <script src="{{ url_for('static', filename='js/modal.js') }}?1=2"></script>
-        <style>
-            .btn__container {
-                padding-top: 20px;
-                background-color: #fff;
-                color: #fba09d;
-            }
-            .btn__container button {
-                text-transform: uppercase;
-            }
-            .btn__container button:first-child {
-                margin-right: 5px;
-            }
-        </style>
+        <script src="{{ url_for('static', filename='js/calendar.js') }}?1=41"></script>
+        <script src="{{ url_for('static', filename='js/modal.js') }}?1=8"></script>
     </head>
 
     <body>
@@ -93,8 +80,11 @@
                     <h2>습관수정</h2>
                 </div>
                 <div class="row">
-                    <label class="label" for="habitName">습관이름</label>
-                    <input type="text" id="habitName" />
+                    <div class="form-control">
+                        <label class="label" for="editName">습관이름</label>
+                        <input type="text" id="editName" />
+                        <p>Error Message</p>
+                    </div>
                     <label class="label" for="color">색상</label>
                     <select name="color" id="select-color">
                         <option value="deep-blue">남색</option>
@@ -122,8 +112,11 @@
                     <h2>습관등록</h2>
                 </div>
                 <div class="row">
-                    <label class="label" for="habit">습관이름</label>
-                    <input type="text" id="habit" name="habit" />
+                    <div class="form-control">
+                        <label class="label" for="habit">습관이름</label>
+                        <input type="text" id="habit" name="habit" />
+                        <p>Error Message</p>
+                    </div>
                     <label class="label" for="color">색상</label>
                     <select name="color" id="add__select-color">
                         <option value="deep-blue">남색</option>
@@ -184,284 +177,126 @@
         </div>
     </body>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const Calendar = FullCalendar.Calendar;
-            const Draggable = FullCalendarInteraction.Draggable;
+        $("#external-events")
+            .find("div")
+            .click((e) => {
+                const modal = $("#multiModal");
+                const content = $("#multiModal .multiModal__content");
+                const marginLeft = content.outerWidth() / 2;
+                const marginTop = content.outerHeight() / 2;
 
-            const containerEl = document.getElementById("external-events");
-            const calendarEl = document.getElementById("calendar");
+                if (modal.css("display") === "none") {
+                    modal.fadeIn(400);
+                    content.css({
+                        "margin-top": -marginTop,
+                        "margin-left": -marginLeft,
+                    });
+                }
+                bgLayerOpen();
 
-            // initialize the external events
-            new Draggable(containerEl, {
-                itemSelector: ".fc-event",
-                eventData: function (eventEl) {
-                    return {
-                        title: eventEl.innerText,
-                    };
-                },
-            });
+                // 처음 설정한 habit 색깔 select box에 뜨게 설정
+                const colorName = e.target.classList[1];
 
-            // initialize the calendar
-            const calendar = new Calendar(calendarEl, {
-                plugins: ["interaction", "dayGrid"],
-                header: { left: "prev", center: "title", right: "next" },
-                editable: false,
-                droppable: true,
-                displayEventTime: false,
-                progressiveEventRendering: true,
-                eventReceive: function (event, _) {
-                    const email = location.search.split("=")[1];
-                    const colorName = event.draggedEl.classList[1];
+                if (e.target.classList[1] === "deep-blue") {
+                    $("#select-color option:eq(0)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "green") {
+                    $("#select-color option:eq(1)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "orange") {
+                    $("#select-color option:eq(2)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "yellow") {
+                    $("#select-color option:eq(3)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "beige") {
+                    $("#select-color option:eq(4)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "pink") {
+                    $("#select-color option:eq(5)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "burgendy") {
+                    $("#select-color option:eq(6)").prop("selected", true);
+                }
+                if (e.target.classList[1] === "grey") {
+                    $("#select-color option:eq(7)").prop("selected", true);
+                }
 
-                    if (colorName === "deep-blue") color = "#4d638c";
-                    else if (colorName === "green") color = "#83b799";
-                    else if (colorName === "orange") color = "#ffa94d";
-                    else if (colorName === "yellow") color = "#e2cd6d";
-                    else if (colorName === "beige") color = "#c3b28f";
-                    else if (colorName === "pink") color = "#e86f68";
-                    else if (colorName === "burgendy") color = "#881d1d";
-                    else if (colorName === "grey") color = "#495057";
+                const currentEmail = location.search.split("=")[1];
 
+                // 모달창에 원래 습관 이름 보이기
+                const targetName = e.target.innerHTML;
+                $("#editName").val(targetName);
+
+                // 습관 삭제
+                $("#delete-btn").click((e) => {
                     $.ajax({
                         type: "POST",
-                        url: "/habits-date",
+                        url: "/habits-delete2",
                         data: {
-                            date: moment(event.event.start).format("YYYY-MM-DDThh:mm"),
-                            title: event.event.title,
-                            email: email,
-                            colorName: colorName,
-                            color: color,
+                            email: currentEmail,
+                            title: targetName,
                         },
-                        dataType: "json",
-                        success: function (response) {
-                            if (response["result"] == "success") {
-                                window.location.reload();
-                            } else {
-                                alert("서버 오류!");
-                            }
+                        success: () => {
+                            $("#multiModal").fadeOut(400);
+                            bgLayerClear();
+                            window.location.reload();
                         },
                     });
-                },
-                timeZone: "local",
-                eventClick: function (info) {
-                    const target = info.event;
+                });
 
-                    const targetId = target.extendedProps._id;
-                    const targetName = target.title;
+                // 습관 수정사항 변경
+                $("#save-btn").click(() => {
+                    const nameInput = $("#editName");
+                    const newName = $("#editName").val();
+                    const newColorName = $("#select-color option:checked").val();
 
-                    const deleteMsg = confirm(`정말로 "${targetName}" 습관을 삭제하시겠습니까?`);
+                    if (newColorName === "deep-blue") color = "#4d638c";
+                    else if (newColorName === "green") color = "#83b799";
+                    else if (newColorName === "orange") color = "#ffa94d";
+                    else if (newColorName === "yellow") color = "#e2cd6d";
+                    else if (newColorName === "beige") color = "#c3b28f";
+                    else if (newColorName === "pink") color = "#e86f68";
+                    else if (newColorName === "burgendy") color = "#881d1d";
+                    else if (newColorName === "grey") color = "#495057";
 
-                    if (deleteMsg) {
-                        target.remove();
+                    if (colorName !== newColorName) {
+                        $(e.target).attr(`${colorName}`, `${newColorName}`);
+                        $(".fc-event").attr(`${colorName}`, `${newColorName}`);
+                    }
+
+                    if (newName.length < 1) {
+                        showError(nameInput, `1글자 이상이 되어야합니다`);
+                    } else if (newName.length > 8) {
+                        showError(nameInput, ` 8글자 이하로 입력해주세요`);
+                    } else {
                         $.ajax({
-                            url: "/habits-delete",
                             type: "POST",
-                            data: { targetId_give: targetId },
+                            url: "/habits-edit",
+                            data: {
+                                email: currentEmail,
+                                title: targetName,
+                                newTitle: newName,
+                                colorName: colorName,
+                                newColorName: newColorName,
+                                color: color,
+                            },
+                            dataType: "json",
                             success: function (response) {
-                                if (response["result"] == "success") {
-                                    console.log("삭제성공");
+                                if (response["result"] === "success") {
+                                    window.location.reload();
+                                } else {
+                                    alert("error");
                                 }
                             },
                         });
                     }
-                },
-                eventSources: [
-                    {
-                        events: function (_, successCallback, __) {
-                            const currentEmail = location.search.split("=")[1];
-                            $.ajax({
-                                url: "/habits-date",
-                                type: "GET",
-                                dataType: "json",
-                                data: {},
-                                success: function (response) {
-                                    const eventsList = response["events_list"];
-
-                                    let event = [];
-                                    for (let i = 0; i < eventsList.length; i++) {
-                                        if (eventsList[i].email === currentEmail) {
-                                            event.push(eventsList[i]);
-                                        }
-                                    }
-
-                                    successCallback(event);
-                                },
-                            });
-                        },
-                    },
-                ],
-            });
-
-            $(document).on("click", ".fc-next-button,.fc-prev-button", function () {
-                const text = $(".fc-center h2").text();
-                const month = text.split(" ")[0];
-                const year = text.split(" ")[1];
-
-                let monthNum = [];
-                if (month === "January") monthNum.push("01");
-                else if (month === "February") monthNum.push("02");
-                else if (month === "March") monthNum.push("03");
-                else if (month === "April") monthNum.push("04");
-                else if (month === "May") monthNum.push("05");
-                else if (month === "June") monthNum.push("06");
-                else if (month === "July") monthNum.push("07");
-                else if (month === "August") monthNum.push("08");
-                else if (month === "September") monthNum.push("09");
-                else if (month === "October") monthNum.push("10");
-                else if (month === "November") monthNum.push("11");
-                else if (month === "December") monthNum.push("12");
-
-                const saveMonth = `${year}-${monthNum}-01`;
-                sessionStorage.setItem("savedMonth", saveMonth);
-            });
-
-            $(".goToday").click(() => {
-                calendar.today();
-                const text = $(".fc-center h2").text();
-                const month = text.split(" ")[0];
-                const year = text.split(" ")[1];
-
-                let monthNum = [];
-                if (month === "January") monthNum.push("01");
-                else if (month === "February") monthNum.push("02");
-                else if (month === "March") monthNum.push("03");
-                else if (month === "April") monthNum.push("04");
-                else if (month === "May") monthNum.push("05");
-                else if (month === "June") monthNum.push("06");
-                else if (month === "July") monthNum.push("07");
-                else if (month === "August") monthNum.push("08");
-                else if (month === "September") monthNum.push("09");
-                else if (month === "October") monthNum.push("10");
-                else if (month === "November") monthNum.push("11");
-                else if (month === "December") monthNum.push("12");
-
-                const saveMonth = `${year}-${monthNum}-01`;
-                sessionStorage.setItem("savedMonth", saveMonth);
-            });
-
-            if (sessionStorage.getItem("savedMonth") != null) {
-                calendar.gotoDate(sessionStorage.getItem("savedMonth"));
-            }
-
-            calendar.render();
-        });
-
-        function goHome() {
-            window.location.href = "http://0.0.0.0:5000/";
-        }
-
-        // 습관 수정/삭제 모달
-        $("#external-events div").click((e) => {
-            const modal = $("#multiModal");
-            const content = $("#multiModal .multiModal__content");
-            const marginLeft = content.outerWidth() / 2;
-            const marginTop = content.outerHeight() / 2;
-
-            if (modal.css("display") === "none") {
-                modal.fadeIn(400);
-                content.css({
-                    "margin-top": -marginTop,
-                    "margin-left": -marginLeft,
                 });
-            }
-            bgLayerOpen();
 
-            // 처음 설정한 habit 색깔 select box에 뜨게 설정
-            const colorName = e.target.classList[1];
-
-            if (e.target.classList[1] === "deep-blue") {
-                $("#select-color option:eq(0)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "green") {
-                $("#select-color option:eq(1)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "orange") {
-                $("#select-color option:eq(2)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "yellow") {
-                $("#select-color option:eq(3)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "beige") {
-                $("#select-color option:eq(4)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "pink") {
-                $("#select-color option:eq(5)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "burgendy") {
-                $("#select-color option:eq(6)").prop("selected", true);
-            }
-            if (e.target.classList[1] === "grey") {
-                $("#select-color option:eq(7)").prop("selected", true);
-            }
-
-            const currentEmail = location.search.split("=")[1];
-
-            // 모달창에 원래 습관 이름 보이기
-            const targetName = e.target.innerHTML;
-            $("#habitName").val(targetName);
-
-            // 습관 삭제
-            $("#delete-btn").click((e) => {
-                $.ajax({
-                    type: "POST",
-                    url: "/habits-delete2",
-                    data: {
-                        email: currentEmail,
-                        title: targetName,
-                    },
-                    success: () => {
-                        $("#multiModal").fadeOut(400);
-                        bgLayerClear();
-                        window.location.reload();
-                    },
+                $("#close-btn").click(() => {
+                    $("#multiModal").fadeOut(400);
+                    bgLayerClear();
                 });
             });
-
-            // 습관 수정사항 변경
-            $("#save-btn").click(() => {
-                const newName = $("#habitName").val();
-                const newColorName = $("#select-color option:checked").val();
-
-                if (newColorName === "deep-blue") color = "#4d638c";
-                else if (newColorName === "green") color = "#83b799";
-                else if (newColorName === "orange") color = "#ffa94d";
-                else if (newColorName === "yellow") color = "#e2cd6d";
-                else if (newColorName === "beige") color = "#c3b28f";
-                else if (newColorName === "pink") color = "#e86f68";
-                else if (newColorName === "burgendy") color = "#881d1d";
-                else if (newColorName === "grey") color = "#495057";
-
-                if (colorName !== newColorName) {
-                    $(e.target).attr(`${colorName}`, `${newColorName}`);
-                    $(".fc-event").attr(`${colorName}`, `${newColorName}`);
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: "/habits-edit",
-                    data: {
-                        email: currentEmail,
-                        title: targetName,
-                        newTitle: newName,
-                        colorName: colorName,
-                        newColorName: newColorName,
-                        color: color,
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        if (response["result"] === "success") {
-                            window.location.reload();
-                        } else {
-                            alert("error");
-                        }
-                    },
-                });
-            });
-
-            $("#close-btn").click(() => {
-                $("#multiModal").fadeOut(400);
-                bgLayerClear();
-            });
-        });
     </script>
 </html>

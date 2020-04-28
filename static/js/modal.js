@@ -20,6 +20,13 @@ function bgLayerClear() {
     }
 }
 
+function showError(input, message) {
+    const formControl = input.parent();
+    formControl.addClass("error");
+    const msg = formControl.children("p");
+    msg.text(message);
+}
+
 // 습관 등록 모달
 function openAddHabits() {
     const modal = $("#addHabits");
@@ -44,25 +51,32 @@ function closeAddHabits() {
 
 function addHabits() {
     const currentEmail = location.search.split("=")[1];
+    const habitInput = $("#habit");
     const habit = $("#habit").val();
     const color = $("#add__select-color option:checked").val();
 
-    $.ajax({
-        type: "POST",
-        url: "/habits-add",
-        data: {
-            email: currentEmail,
-            habit: habit,
-            color: color,
-        },
-        success: function (response) {
-            if (response["result"] == "success") {
-                window.location.reload();
-            } else {
-                alert("서버 오류!");
-            }
-        },
-    });
+    if (habit.length < 1) {
+        showError(habitInput, `1글자 이상이 되어야합니다`);
+    } else if (habit.length > 8) {
+        showError(habitInput, ` 8글자 이하로 입력해주세요`);
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/habits-add",
+            data: {
+                email: currentEmail,
+                habit: habit,
+                color: color,
+            },
+            success: function (response) {
+                if (response["result"] == "success") {
+                    window.location.reload();
+                } else {
+                    alert("서버 오류!");
+                }
+            },
+        });
+    }
 }
 
 // 통계 차트 모달
