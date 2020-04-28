@@ -56,7 +56,8 @@ function posting() {
                     bgLayerClear();
                     return;
                 }
-                window.location.href = "/habits?email=" + response["current_email"];
+                const currentEmail = response["current_email"];
+                window.location.href = `/habits?email=${currentEmail}`;
             } else {
                 alert("서버 오류!");
             }

@@ -11,6 +11,9 @@ body {
     align-items: center;
     min-width: 1300px;
 }
+a {
+    cursor: pointer;
+}
 
 /* 모달창 */
 .modal {
