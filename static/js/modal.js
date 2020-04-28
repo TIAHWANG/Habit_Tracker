@@ -140,45 +140,79 @@ function openChart() {
             const groupedByMonth = groupBy(event, (e) => e.date.split("-")[1]);
             const month = Array.from(groupedByMonth);
 
-            // 내가 선택한 month의 습관정보만 가져오는 array 형성
-            let currentMonth = [];
+            let existMonth = [];
             for (let i = 0; i < month.length; i++) {
-                if (month[i][0] === changeMonth) {
-                    currentMonth.push(month[i][1]);
+                existMonth.push(month[i][0]);
+            }
+
+            if (existMonth.includes(changeMonth)) {
+                // 내가 선택한 month의 습관정보만 가져오는 array 형성
+                let currentMonth = [];
+                for (let i = 0; i < month.length; i++) {
+                    if (month[i][0] === changeMonth) {
+                        currentMonth.push(month[i][1]);
+                    }
                 }
-            }
 
-            // currentMonth를 다시 습관이름별로 array 형성
-            const groupedByTitle = groupBy(currentMonth[0], (e) => e.title);
-            const labelList = Array.from(groupedByTitle);
+                // currentMonth를 다시 습관이름별로 array 형성
+                const groupedByTitle = groupBy(currentMonth[0], (e) => e.title);
+                const labelList = Array.from(groupedByTitle);
 
-            // 월별로 습관별 횟수 array
-            let countByHabits = [];
-            for (let i = 0; i < labelList.length; i++) {
-                countByHabits.push(labelList[i][1].length);
-            }
+                // 월별로 습관별 횟수 array
+                let countByHabits = [];
+                for (let i = 0; i < labelList.length; i++) {
+                    countByHabits.push(labelList[i][1].length);
+                }
 
-            let habitName = [];
-            for (let i = 0; i < labelList.length; i++) {
-                habitName.push(labelList[i][0]);
-            }
+                let habitName = [];
+                for (let i = 0; i < labelList.length; i++) {
+                    habitName.push(labelList[i][0]);
+                }
 
-            if ($("#graph").css("display") === "none") {
-                $("#graph").show();
-                let ctx = document.getElementById("myChart").getContext("2d");
+                if ($("#graph").css("display") === "none") {
+                    $("#chartAlert").css("visibility", "hidden");
+                    $("#graph").show();
+                    $("#graph")
+                        .children("h2")
+                        .text(`${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에 이만큼 했네요 😄`);
+                    const ctx = document.getElementById("myChart").getContext("2d");
 
-                var myChart = new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        labels: habitName,
-                        datasets: [
-                            {
-                                data: countByHabits,
-                                backgroundColor: ["#3A4564", "#D7D1E5", "#EA9FA2", "#FFDBDC", "#AAAAAA", "#F8D3A5", "#81B3AE"],
-                            },
-                        ],
-                    },
-                });
+                    const myChart = new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                            labels: habitName,
+                            datasets: [
+                                {
+                                    data: countByHabits,
+                                    backgroundColor: ["#3A4564", "#D7D1E5", "#EA9FA2", "#FFDBDC", "#AAAAAA", "#F8D3A5", "#81B3AE"],
+                                },
+                            ],
+                        },
+                    });
+                } else if ($("#myChart").html("") != "none") {
+                    $("#chartAlert").css("visibility", "hidden");
+                    $("#graph").show();
+                    $("#graph")
+                        .children("h2")
+                        .text(`${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에 이만큼 했네요 😄`);
+                    let ctx = document.getElementById("myChart").getContext("2d");
+
+                    var myChart = new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                            labels: habitName,
+                            datasets: [
+                                {
+                                    data: countByHabits,
+                                    backgroundColor: ["#3A4564", "#D7D1E5", "#EA9FA2", "#FFDBDC", "#AAAAAA", "#F8D3A5", "#81B3AE"],
+                                },
+                            ],
+                        },
+                    });
+                }
+            } else {
+                $("#graph").hide();
+                $("#chartAlert").css("visibility", "visible");
             }
         },
     });

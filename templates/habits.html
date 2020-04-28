@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=4" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=18" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=9" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=12" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
@@ -50,20 +50,22 @@
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
         <script src="{{ url_for('static', filename='js/calendar.js') }}?1=41"></script>
-        <script src="{{ url_for('static', filename='js/modal.js') }}?1=8"></script>
+        <script src="{{ url_for('static', filename='js/modal.js') }}?1=9"></script>
     </head>
 
     <body>
+        <!-- 메인타이틀 -->
         <div class="header">
             <h1>{{ username }}님의 습관달력&nbsp;<i class="fas fa-book-open"></i></h1>
         </div>
 
-        <!-- 습관목록 -->
+        <!-- 화면 상단 버튼 -->
         <div class="btn__container">
             <button onClick="goHome()" type="button" class="default-btn">Home</button>
             <button type="button" class="default-btn goToday">Today</button>
         </div>
 
+        <!-- 습관목록 -->
         <div id="external-events">
             <p><i class="far fa-list-alt"></i>&nbsp;<strong>나의 습관목록</strong></p>
             {% for habit in habits %}
@@ -161,13 +163,16 @@
                         </select>
                         <button type="button" onClick="openChart()" class="default-btn">보기</button>
                     </div>
+                    <div id="chartAlert" class="chart__column">
+                        <span>선택하신 월에는 등록된 습관이 없어요😅</span>
+                    </div>
                     <div class="chart__column">
                         <button type="button" class="default-btn" onClick="closeChart()">닫기</button>
                     </div>
                 </div>
                 <div class="box">
                     <div id="graph" class="modal">
-                        <h2>한달에 이만큼 했네요 😄</h2>
+                        <h2></h2>
                         <div>
                             <canvas id="myChart" height="500" width="1000"></canvas>
                         </div>
@@ -177,6 +182,7 @@
         </div>
     </body>
     <script>
+        // 습관 수정 모달
         $("#external-events")
             .find("div")
             .click((e) => {
