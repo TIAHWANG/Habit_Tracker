@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=4" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=18" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=12" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=13" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
@@ -50,7 +50,7 @@
         <script src="{{ url_for('static', filename='js/vendor/interaction.js') }}"></script>
         <script src="{{ url_for('static', filename='js/vendor/chart.js') }}"></script>
         <script src="{{ url_for('static', filename='js/calendar.js') }}?1=41"></script>
-        <script src="{{ url_for('static', filename='js/modal.js') }}?1=9"></script>
+        <script src="{{ url_for('static', filename='js/modal.js') }}?1=10"></script>
     </head>
 
     <body>
@@ -146,7 +146,13 @@
             <div class="content chart__content">
                 <div class="box">
                     <div class="chart__column">
-                        <span>월 선택 :</span>
+                        <span>연도:</span>
+                        <select name="selectYear" id="selectYear">
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                        </select>
+                        <span>월:</span>
                         <select name="selectMonth" id="selectMonth">
                             <option value="01">JAN</option>
                             <option value="02">FEB</option>

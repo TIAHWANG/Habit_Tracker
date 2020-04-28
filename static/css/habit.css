@@ -95,6 +95,9 @@ h1 {
 .box .chart__column:last-child {
     text-align: right;
 }
+.chart__column select {
+    margin-right: 5px;
+}
 .chart__column span {
     font-size: 16px;
 }

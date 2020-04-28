@@ -118,9 +118,9 @@ function groupBy(list, keyGetter) {
     });
     return map;
 }
-
 function openChart() {
     const currentEmail = location.search.split("=")[1];
+    const changeYear = $("#selectYear option:selected").val();
     const changeMonth = $("#selectMonth option:selected").val();
 
     $.ajax({
@@ -136,26 +136,29 @@ function openChart() {
                 }
             }
 
-            // 월별로 새로운 array 형성
-            const groupedByMonth = groupBy(event, (e) => e.date.split("-")[1]);
-            const month = Array.from(groupedByMonth);
+            // 연도와 월별로 새로운 array 형성
+            const groupedByYearAndMonth = groupBy(event, (e) => {
+                const y = e.date.split("-")[0];
+                const m = e.date.split("-")[1];
+                return `${y}-${m}`;
+            });
+            const yearAndMonth = Array.from(groupedByYearAndMonth);
 
-            let existMonth = [];
-            for (let i = 0; i < month.length; i++) {
-                existMonth.push(month[i][0]);
-            }
-
-            if (existMonth.includes(changeMonth)) {
-                // 내가 선택한 month의 습관정보만 가져오는 array 형성
-                let currentMonth = [];
-                for (let i = 0; i < month.length; i++) {
-                    if (month[i][0] === changeMonth) {
-                        currentMonth.push(month[i][1]);
-                    }
+            // 선택한 연도와 월의 습관 array 형성
+            let showMonth = [];
+            for (let i = 0; i < yearAndMonth.length; i++) {
+                if (yearAndMonth[i][0].split("-")[0] === changeYear && yearAndMonth[i][0].split("-")[1] === changeMonth) {
+                    showMonth.push(yearAndMonth[i]);
                 }
-
-                // currentMonth를 다시 습관이름별로 array 형성
-                const groupedByTitle = groupBy(currentMonth[0], (e) => e.title);
+            }
+            if (!showMonth) {
+            } else {
+                $("#graph").hide();
+                $("#chartAlert").css("visibility", "visible");
+            }
+            if (showMonth[0][0].includes(changeYear) && showMonth[0][0].includes(changeMonth)) {
+                // 습관이름별로 array 형성
+                const groupedByTitle = groupBy(showMonth[0][1], (e) => e.title);
                 const labelList = Array.from(groupedByTitle);
 
                 // 월별로 습관별 횟수 array
@@ -172,9 +175,8 @@ function openChart() {
                 if ($("#graph").css("display") === "none") {
                     $("#chartAlert").css("visibility", "hidden");
                     $("#graph").show();
-                    $("#graph")
-                        .children("h2")
-                        .text(`${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에 이만큼 했네요 😄`);
+                    $("#graph").children("h2").text(`
+                        ${changeYear}년 ${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에는 이만큼 했네요 😄`);
                     const ctx = document.getElementById("myChart").getContext("2d");
 
                     const myChart = new Chart(ctx, {
@@ -194,10 +196,11 @@ function openChart() {
                     $("#graph").show();
                     $("#graph")
                         .children("h2")
-                        .text(`${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에 이만큼 했네요 😄`);
-                    let ctx = document.getElementById("myChart").getContext("2d");
+                        .text(`${changeYear}년 ${changeMonth.includes("0") ? changeMonth.split("")[1] : changeMonth}월에는 이만큼 했네요 😄`);
 
-                    var myChart = new Chart(ctx, {
+                    const ctx = document.getElementById("myChart").getContext("2d");
+
+                    const myChart = new Chart(ctx, {
                         type: "doughnut",
                         data: {
                             labels: habitName,
@@ -210,9 +213,6 @@ function openChart() {
                         },
                     });
                 }
-            } else {
-                $("#graph").hide();
-                $("#chartAlert").css("visibility", "visible");
             }
         },
     });
