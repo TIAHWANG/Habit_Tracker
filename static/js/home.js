@@ -36,36 +36,40 @@ function openModal() {
     bgLayerOpen();
 }
 
+function showError(input, message) {
+    const formControl = input.parent();
+    formControl.addClass("error");
+    const msg = formControl.children("p");
+    msg.text(message);
+}
 function posting() {
+    const emailInput = $("#email");
     const email = $("#email").val();
     const habit = $("#habit").val();
     const bgColor = $("#select-color option:selected").val();
 
-    $.ajax({
-        type: "POST",
-        url: "/habits",
-        data: {
-            email: email,
-            habit: habit,
-            bgColor: bgColor,
-        },
-        success: function (response) {
-            if (response["result"] == "success") {
-                if (email === "") {
-                    alert("이메일을 입력해주세요");
-                    bgLayerClear();
-                    return;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(email.trim())) {
+        $.ajax({
+            type: "POST",
+            url: "/habits",
+            data: {
+                email: email,
+                habit: habit,
+                bgColor: bgColor,
+            },
+            success: function (response) {
+                if (response["result"] == "success") {
+                    const currentEmail = response["current_email"];
+                    window.location.href = `/habits?email=${currentEmail}`;
+                } else {
+                    alert("서버 오류!");
                 }
-                const currentEmail = response["current_email"];
-                window.location.href = `/habits?email=${currentEmail}`;
-            } else {
-                alert("서버 오류!");
-            }
-        },
-    });
-
-    $("#mainModal").fadeOut(400);
-    bgLayerClear();
+            },
+        });
+    } else {
+        showError(emailInput, "@를 포함해서 형식에 알맞게 입력해주세요");
+    }
 }
 
 function closeModal() {

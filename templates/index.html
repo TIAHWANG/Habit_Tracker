@@ -37,10 +37,10 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=16" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/mainPage.css') }}?1=10" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/mainPage.css') }}?1=11" />
 
         <!-- JS -->
-        <script src="{{ url_for('static', filename='js/home.js') }}?1=1"></script>
+        <script src="{{ url_for('static', filename='js/home.js') }}?1=2"></script>
     </head>
 
     <body>
@@ -63,9 +63,11 @@
                         <small><span>방문</span>한적이 있다면, <span>이메일</span>만 입력해주세요</small>
                     </div>
                     <div class="row">
-                        <label class="label" for="email">이메일</label>
-                        <input type="email" name="email" id="email" placeholder="이메일을 입력해주세요" required />
-
+                        <div class="form-control">
+                            <label class="label" for="email">이메일</label>
+                            <input type="email" name="email" id="email" placeholder="이메일을 입력해주세요" required />
+                            <p>Error message</p>
+                        </div>
                         <label class="label" for="habit">습관이름</label>
                         <input type="text" name="habit" id="habit" placeholder="습관이름 입력해주세요" required />
 
