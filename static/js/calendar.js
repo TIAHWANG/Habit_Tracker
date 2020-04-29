@@ -71,11 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     url: "/habits-delete",
                     type: "POST",
                     data: { targetId_give: targetId },
-                    success: function (response) {
-                        if (response["result"] == "success") {
-                            console.log("삭제성공");
-                        }
-                    },
                 });
             }
         },

@@ -151,12 +151,11 @@ function openChart() {
                     showMonth.push(yearAndMonth[i]);
                 }
             }
-            if (!showMonth) {
-            } else {
+
+            if (showMonth.length === 0) {
                 $("#graph").hide();
                 $("#chartAlert").css("visibility", "visible");
-            }
-            if (showMonth[0][0].includes(changeYear) && showMonth[0][0].includes(changeMonth)) {
+            } else if (showMonth[0].length !== 0) {
                 // 습관이름별로 array 형성
                 const groupedByTitle = groupBy(showMonth[0][1], (e) => e.title);
                 const labelList = Array.from(groupedByTitle);
