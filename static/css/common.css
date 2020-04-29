@@ -9,7 +9,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 1300px;
 }
 a {
     cursor: pointer;

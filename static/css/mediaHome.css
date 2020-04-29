@@ -1,0 +1,27 @@
+@media screen and (max-width: 769px) {
+    body {
+        max-width: 769px;
+    }
+    .title h1 {
+        font-size: 40px;
+    }
+    .container i {
+        font-size: 150px;
+    }
+    .container p {
+        text-align: center;
+    }
+    .main__content {
+        width: 450px;
+        height: 300px;
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    .form-control p {
+        font-size: 10px;
+        bottom: 5px;
+    }
+}

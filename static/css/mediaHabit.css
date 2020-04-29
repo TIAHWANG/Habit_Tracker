@@ -1,0 +1,80 @@
+@media screen and (max-width: 1024px) {
+    .btn__container {
+        margin-bottom: 20px;
+    }
+    .events__list {
+        width: 80%;
+        position: inherit;
+    }
+    .events__column {
+        display: flex;
+        flex-direction: row;
+    }
+    .events__column div {
+        width: 100%;
+    }
+    .events__column div:not(:last-child) {
+        margin-right: 5px;
+    }
+    .calendar {
+        max-width: 800px;
+    }
+    .chart__content {
+        width: 800px;
+        height: 700px;
+    }
+    .chart__column span {
+        font-size: 14px;
+    }
+}
+@media screen and (max-width: 769px) {
+    body {
+        max-width: 769px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    .events__column div {
+        font-size: 12px;
+    }
+    .calendar {
+        max-width: 600px;
+        padding-left: 1%;
+        padding-right: 1%;
+    }
+    .calendar .fc-content {
+        font-size: 12px;
+    }
+    .content {
+        padding: 15px;
+    }
+    .addHabits__content,
+    .multiModal__content {
+        width: 360px;
+        height: 200px;
+    }
+    .form-control p {
+        font-size: 10px;
+        bottom: 5px;
+    }
+    .chart__content {
+        width: 400px;
+        height: 400px;
+    }
+    .chart__content .box:first-child {
+        display: flex;
+        flex-direction: column;
+    }
+    .box .chart__column:nth-child(2) {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .chart__column span {
+        font-size: 12px;
+    }
+    .chart__column .default-btn.media {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+}

@@ -41,8 +41,9 @@
         <!-- CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/daygrid.css') }}?1=1" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/fullcalendar.css') }}?1=4" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=18" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=13" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}?1=19" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/habit.css') }}?1=15" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/mediaHabit.css') }}" />
 
         <!-- JS -->
         <script src="{{ url_for('static', filename='js/vendor/fullcalendar.js') }}"></script>
@@ -66,11 +67,13 @@
         </div>
 
         <!-- 습관목록 -->
-        <div id="external-events">
+        <div id="external-events" class="events__list">
             <p><i class="far fa-list-alt"></i>&nbsp;<strong>나의 습관목록</strong></p>
-            {% for habit in habits %}
-            <div class="fc-event {{habit.color}}">{{ habit.habit }}</div>
-            {% endfor %}
+            <div class="events__column">
+                {% for habit in habits %}
+                <div class="fc-event {{habit.color}}">{{ habit.habit }}</div>
+                {% endfor %}
+            </div>
             <button onClick="openAddHabits()" type="button" class="default-btn">습관추가</button>
             <button onClick="openChartModal()" type="button" class="default-btn">통계</button>
         </div>
@@ -139,7 +142,7 @@
         </div>
 
         <!-- 달력 -->
-        <div id="calendar"></div>
+        <div id="calendar" class="calendar"></div>
 
         <!-- 통계차트 -->
         <div id="chart__container" class="modal">
@@ -173,7 +176,7 @@
                         <span>선택하신 월에는 등록된 습관이 없어요😅</span>
                     </div>
                     <div class="chart__column">
-                        <button type="button" class="default-btn" onClick="closeChart()">닫기</button>
+                        <button type="button" class="default-btn media" onClick="closeChart()">닫기</button>
                     </div>
                 </div>
                 <div class="box">

@@ -13,7 +13,7 @@ h1 {
 
 /* 화면 상단 버튼들 */
 .btn__container {
-    padding-top: 20px;
+    margin-top: 20px;
     background-color: #fff;
     color: #fba09d;
 }
@@ -25,7 +25,7 @@ h1 {
 }
 
 /* 습관 목록 모달창 */
-#external-events {
+.events__list {
     text-align: center;
     position: fixed;
     z-index: 2;
@@ -37,14 +37,14 @@ h1 {
     background-color: #fff;
     color: #fba09d;
 }
-#external-events div.fc-event {
+.events__list div.fc-event {
     margin: 10px 0;
     cursor: pointer;
     padding: 2px;
 }
 
 /* 달력 */
-#calendar {
+.calendar {
     max-width: 900px;
     margin: 40px auto;
 }
