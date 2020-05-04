@@ -156,5 +156,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function goHome() {
-    window.location.href = "http://0.0.0.0:5000/";
+    window.location.href = "/";
 }

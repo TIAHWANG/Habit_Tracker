@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 from pymongo import MongoClient
 
-client = MongoClient('mongodb://test:test@13.125.224.132', 27017)
+client = MongoClient('mongodb://test:test@54.180.95.196', 27017)
 db = client.dbhabits
 
 
@@ -65,6 +65,12 @@ def editName():
     color_name = request.form['colorName']
     edited_color_name = request.form['newColorName']
     color_receive = request.form['color']
+
+    print(title_receive)
+    print(edited_title_receive)
+    print(color_name)
+    print(edited_color_name)
+    print(color_receive)
 
     if (title_receive != edited_title_receive):
         db.habits.update_one({'email': email_receive, 'habit': title_receive},
